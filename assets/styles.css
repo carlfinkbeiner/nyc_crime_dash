@@ -1,0 +1,162 @@
+/* Overall dashboard container */
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    background-color: #333;
+    color: #333;
+}
+
+/* Reset default browser styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrollbars if you want a full-screen app without scrolling */
+    height: 100%; /* This helps to fill the full height of the browser window */
+    width: 100%; /* This helps to fill the full width of the browser window */
+}
+
+/* Side panel styling */
+.side-panel {
+    width: 20%;
+    padding: 20px;
+    background-color: #222;
+    border-right: 2px solid #444;
+}
+
+.title {
+    margin-bottom: 20px;
+    color: #007BFF;
+}
+
+/* Style for the static text box */
+.static-text-box {
+    background-color: #222; /* Matching the side-panel background color */
+    color: #fff; /* White text color for readability */
+    border: 1px solid #444; /* Border to match the overall style */
+    padding: 10px; /* Inner spacing for text */
+    margin-bottom: 20px; /* Space below the text box */
+    overflow-y: auto; /* Allows for a scrollbar if the text overflows */
+    max-height: 150px; /* Maximum height for the text box */
+}
+
+
+.dropdown-container {
+    margin-bottom: 20px;
+}
+
+.reset-button-container {
+    margin-top: 20px;
+}
+
+/* Main panel styling */
+.main-panel {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Charts container within the main panel */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    margin-top: 20px;
+    gap: 20px;
+}
+
+/* Style adjustments for graphs */
+.map-graph, .bar-graph {
+    background-color: #222;
+    border: 1px solid #444;
+}
+
+/* Style dropdowns */
+.Select-control, .Select-menu-outer {
+    background-color: #222;
+    color: #fff;
+}
+
+/* CSS for the dropdown selected option */
+.Select-value,
+.Select-value-label {
+    color: white !important; /* Ensure this overrides any other styles */
+}
+
+/* CSS for the dropdown option when it's hovered over in the menu */
+.Select-option.is-focused {
+    background-color: #444 !important; /* Darker background for the focused option */
+}
+
+/* CSS for the dropdown option when it's selected */
+.Select-option.is-selected {
+    background-color: #333 !important; /* Dark background for the selected option */
+    color: white !important;
+}
+
+/* CSS for the placeholder of the dropdown */
+.Select-placeholder {
+    color: white !important; /* White color for the placeholder text */
+}
+
+/* CSS for the control of the dropdown */
+.Select-control {
+    background-color: #333 !important; /* Match the background color to your app's theme */
+    border-color: #555 !important; /* Matching border color */
+}
+
+
+/* Style buttons */
+button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Toggle container styling */
+.toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #2c3e50; /* A dark background color for the toggle container */
+}
+
+/* Radio items styling */
+.radio-items {
+    display: flex;
+    gap: 20px; /* Add space between radio items */
+    color: #fff; /* White text color for better readability on a dark background */
+    font-size: 16px; /* Increase font size for better visibility */
+}
+
+/* Individual radio buttons styling */
+.radio-items input[type="radio"] {
+    accent-color: #007bff; /* Change the selection color */
+    margin-right: 5px; /* Space out the radio button from its label */
+}
+
+/* Labels for radio buttons styling */
+.radio-items label {
+    cursor: pointer; /* Indicate that labels are clickable */
+    padding: 5px 10px; /* Add some padding for clickable area */
+    border-radius: 5px; /* Optional: Add rounded corners to the labels */
+    transition: background-color 0.3s; /* Smooth transition for background color change */
+}
+
+/* Hover effect for labels */
+.radio-items label:hover {
+    background-color: #34495e; /* Darker background on hover for labels */
+}
+
+/* Style for the selected radio item label */
+.radio-items input[type="radio"]:checked + label {
+    background-color: #007bff; /* Change background of selected label */
+    color: #fff; /* Ensure text is white on the selected label */
+}
