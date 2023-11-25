@@ -1,2 +1,2 @@
-# nyc_crime_dash
+# NYC Crime Dashboard
 Dashboard exploring crime in NYC
