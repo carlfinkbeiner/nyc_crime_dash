@@ -35,7 +35,7 @@ app.layout = html.Div([
     html.Div([
         html.H1("NYC Crime Data", className='title'),
         html.Div(
-            "Enter a static description of the graph here, which can be around 100 words. This text will elaborate on the purpose of the graphs, what data is being shown, and any other relevant information that users should know when interacting with the dashboard.",
+            "Placeholder txt that will be used to provide a brief description of the project",
             className='static-text-box'
         ),
 
@@ -331,9 +331,9 @@ def update_arrest_map(year, crime_types,selected_map):
 
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
-    fig.update_layout(
+    map = fig.update_layout(
         legend=dict(
-            title='',  # Removes the title
+            title=None,  # Removes the title
             orientation='h',
             yanchor='bottom',
             y=0.5,  # Adjust this to move the legend up or down on the map
@@ -349,7 +349,7 @@ def update_arrest_map(year, crime_types,selected_map):
     )
 
     # Customize the color bar
-    fig.update_coloraxes(colorbar=dict(
+    map.update_coloraxes(colorbar=dict(
         thickness=20,  # Controls the thickness of the color bar
         len=0.3,  # Controls the length of the color bar (percentage of the figure height)
         yanchor='bottom',
@@ -359,7 +359,7 @@ def update_arrest_map(year, crime_types,selected_map):
     ))
 
 
-    return fig
+    return map
 
 
 #Arrest count bar
@@ -380,6 +380,21 @@ def update_bar(crime_types,selected_precinct):
 
 
     arrest_data = boro_arrests.groupby(['year','ARREST_BORO']).sum().reset_index()
+
+    if selected_precinct is None and crime_types is None:
+        title = 'Yearly Arrests'
+    
+    elif selected_precinct is not None and crime_types is not None:
+        title = f'Yearly Arrests in Precinct {selected_precinct} (filtered by crime)'
+    
+    elif selected_precinct:
+        title = f'Yearly Arrests in Precinct {selected_precinct}'
+    
+    elif crime_types:
+        title = 'Yearly Arrests (filtered by crime)'
+    
+    else:
+        title = 'Yearly Arrests'
     
     time.sleep(1)
 
@@ -387,6 +402,7 @@ def update_bar(crime_types,selected_precinct):
             x='year', 
             y='arrest_count', 
             color='ARREST_BORO',
+            title=title,
             labels={
                 'year': 'Year',
                 'arrest_count': 'Arrest count',
@@ -409,7 +425,15 @@ def update_bar(crime_types,selected_precinct):
                 x=0.5
             ),
             template='plotly',
-            margin=dict(t=60)
+            margin=dict(t=60),
+            title={
+                'text': title,
+                'y':0.95,  # Adjusts the title's vertical position. You may not need this if `t=60` works well.
+                'x':0.1,  # Centers the title
+                'xanchor': 'left',
+                'yanchor': 'top'
+            },
+            title_pad=dict(t=1)  # Adjust the padding to give the title some space if needed           
     )
 
     return arrest_bar
@@ -440,13 +464,36 @@ def update_monthly_bar(crime_types, selected_precinct, year):
 
     # Group by month and BORO
     arrests_grouped = filtered_data.groupby(['month', 'ARREST_BORO']).sum()['arrest_count'].reset_index()
+
+    #Getting title
+    if selected_precinct is None and crime_types is None and year is None:
+        title = 'Monthly Arrests'
+    
+    elif selected_precinct is not None and crime_types is not None and year is not None:
+        title = f'Monthly Arrests in Precinct {selected_precinct} in {year} (filtered by crime)'
+    
+    elif selected_precinct is not None and year is not None:
+        title = f'Monthly Arrests in Precinct {selected_precinct} in {year}'
+    
+    elif year is not None:
+        title = f'Monthly Arrests in {year}'
+    
+    elif crime_types is not None and year is not None:
+        title = f'Monthly Arrests in {year}(filtered by crime)'
+    
+    else:
+        title = 'Monthly Arrests'
+        
+
+
+
     time.sleep(1)
 
-    monthly_bar = px.bar(
+    monthly_bar = px.line(
         arrests_grouped,
         x='month',
         y='arrest_count', color='ARREST_BORO',
-        #title=f"Arrests in {selected_precinct if selected_precinct else 'All Precincts'} by Month",
+        title=title,
         labels={
             'month': 'Month',
             'arrest_count': 'Arrest Count',
@@ -458,17 +505,25 @@ def update_monthly_bar(crime_types, selected_precinct, year):
         'plot_bgcolor': custom_background_color,
         'paper_bgcolor': custom_background_color,
         'font_color': 'white'
-    }, 
-    legend_title_text='',
-    showlegend=False,
-    legend=dict(
-        orientation='h',
-        yanchor='bottom',
-        y=1.02,  # Slightly above the top
-        xanchor='center',
-        x=0.5
-    ),
-    margin=dict(t=60))
+        }, 
+        legend_title_text='',
+        showlegend=False,
+        legend=dict(
+            orientation='h',
+            yanchor='bottom',
+            y=1.02,  # Slightly above the top
+            xanchor='center',
+            x=0.5
+        ),
+        title={
+            'text': title,
+            'y':0.95,  # Adjusts the title's vertical position. You may not need this if `t=60` works well.
+            'x':0.1,  # Centers the title
+            'xanchor': 'left',
+            'yanchor': 'top'
+        },
+        title_pad=dict(t=1),  # Adjust the padding to give the title some space if needed 
+        margin=dict(t=60))
 
     return monthly_bar
 
@@ -492,13 +547,34 @@ def update_precinct_bar(year, selected_precinct):
     #data_filtered = filtered_data.sort_values('arrest_count', ascending=False)
     data_filtered = filtered_data.groupby(['OFNS_DESC']).sum()['arrest_count'].reset_index()
     data_filtered = data_filtered.sort_values('arrest_count', ascending=False)
-    top_10 = data_filtered.head(10)
+    top_10 = data_filtered.head(10).sort_values('arrest_count', ascending=True)
+
+        #Getting title
+    if selected_precinct is None and year is None:
+        title = 'Arrest Types'
+    
+    elif selected_precinct is not None and year is not None:
+        title = f'Arrest Types in Precinct {selected_precinct} in {year}'
+    
+    elif selected_precinct:
+        title = f'Arrest Types in Precinct {selected_precinct}'
+    
+    elif year:
+        title = f'Arrest Types in {year}'
+    
+    else:
+        title = 'Arrest Types'
+
+
+
 
     time.sleep(1)
     bar = px.bar(
         top_10, 
-        x='OFNS_DESC', 
-        y='arrest_count', 
+        x='arrest_count', 
+        y='OFNS_DESC', 
+        orientation='h',
+        title=title,
         labels={
             'OFNS_DESC': 'Offense',
             'arrest_count': 'Arrest count'
@@ -510,8 +586,16 @@ def update_precinct_bar(year, selected_precinct):
                     'paper_bgcolor': custom_background_color,
                     'font_color': 'white'
                     },
-                    template='plotly'
-                    )
+                    template='plotly',
+                    title={
+                        'text': title,
+                        'y':0.95,  # Adjusts the title's vertical position. You may not need this if `t=60` works well.
+                        'x':0.1,  # Centers the title
+                        'xanchor': 'left',
+                        'yanchor': 'top'
+                    },
+                    title_pad=dict(t=1)  # Adjust the padding to give the title some space if needed 
+                )
 
     return fig
 
