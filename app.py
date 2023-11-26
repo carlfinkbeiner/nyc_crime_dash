@@ -1,4 +1,5 @@
 import dash
+import requests
 from dash import html, dcc, Input, Output, State
 import plotly.express as px
 import plotly.graph_objs as go
@@ -7,8 +8,10 @@ import json
 import time
 
 
-arrest_data = pd.read_csv('/Users/carlfinkbeiner/Riverside_Analytics/ny_crime/data/arrest_data_processed_v2.csv')
+# arrest_data_url = 'https://raw.githubusercontent.com/carlfinkbeiner/nyc_crime_dash/main/data/arrest_data_processed.csv'
+# precinct_geojson_url = 'https://github.com/carlfinkbeiner/nyc_crime_dash/blob/main/data/police_precincts.geojson'
 
+arrest_data = pd.read_csv('/Users/carlfinkbeiner/Riverside_Analytics/ny_crime/arrest_data_processed.csv')
 
 with open('/Users/carlfinkbeiner/Riverside_Analytics/ny_crime/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
@@ -486,7 +489,12 @@ def update_monthly_bar(crime_types, selected_precinct, year):
         
 
 
+    months_ordered = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
+    arrests_grouped['month'] = pd.Categorical(arrests_grouped['month'], categories=months_ordered, ordered=True)
+
+    arrests_grouped = arrests_grouped.sort_values('month')
+    
     time.sleep(1)
 
     monthly_bar = px.line(

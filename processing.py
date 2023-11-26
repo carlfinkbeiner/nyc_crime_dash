@@ -29,6 +29,10 @@ df['month'] = df['ARREST_DATE'].dt.month
 borough_mapping = {'M': 'Manhattan', 'Q': 'Queens', 'B': 'Bronx', 'S': 'Staten Island', 'K': 'Brooklyn'}
 df['ARREST_BORO'] = df['ARREST_BORO'].replace(borough_mapping)
 
+
+# Group by year and precinct, then count the number of arrests
+arrests_per_year_precinct = df.groupby(['month','year','ARREST_PRECINCT','ARREST_BORO','OFNS_DESC']).size().reset_index(name='arrest_count')
+
 #Update month names
 month_mapping = {
     1: 'January', 
@@ -45,15 +49,11 @@ month_mapping = {
     12: 'December'  
     }
 
-df['month'].replace(month_mapping)
-
-
-# Group by year and precinct, then count the number of arrests
-arrests_per_year_precinct = df.groupby(['month','year','ARREST_PRECINCT','ARREST_BORO','OFNS_DESC']).size().reset_index(name='arrest_count')
+arrests_per_year_precinct['month'] = arrests_per_year_precinct['month'].replace(month_mapping)
 
 print(arrests_per_year_precinct.head())
 
-arrests_per_year_precinct.to_csv('arrest_data_processed_v3.csv')
+arrests_per_year_precinct.to_csv('arrest_data_processed.csv')
 
 
 
