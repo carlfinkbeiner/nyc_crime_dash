@@ -1,26 +1,64 @@
 /* Overall dashboard container */
 .dashboard-container {
-    display: flex;
+    display: block; /* Use block instead of flex for the main container */
     height: 100vh;
     background-color: #333;
-    color: #333;
+    color: #fff; /* Text color set to white for visibility */
+}
+
+/* Header Styling */
+.dashboard-header {
+    width: 100%; /* Ensure the header spans the full width */
+    background-color: #333; /* Matching the dashboard theme */
+    color: #fff; /* White color for the title */
+    padding: 10px 20px; /* Add some padding */
+    border-bottom: 2px solid #444; /* A bottom border to separate from the rest of the dashboard */
+}
+
+/* Content container for side panel and main panel */
+.content-container {
+    display: flex; /* Use flex to arrange children side by side */
+    height: calc(100% - 60px); /* Adjust height to fill the remaining space, accounting for the header height */
+}
+
+/* Side panel styling */
+.side-panel {
+    width: 20%; /* Adjust width as needed */
+    background-color: #222;
+    color: #fff; /* Text color set to white for visibility */
+    padding: 20px;
+    border-right: 2px solid #444;
+    overflow: auto; /* Enable scrolling if content overflows */
+}
+
+/* Main panel styling */
+.main-panel {
+    flex-grow: 1; /* Allow the main panel to fill the remaining width */
+    background-color: #333;
+    color: #fff; /* Text color set to white for visibility */
+    padding: 20px;
+    overflow: auto; /* Enable scrolling if content overflows */
 }
 
 /* Reset default browser styles */
 html, body {
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Prevent scrollbars if you want a full-screen app without scrolling */
+    overflow: hidden; 
     height: 100%; /* This helps to fill the full height of the browser window */
     width: 100%; /* This helps to fill the full width of the browser window */
 }
 
-/* Side panel styling */
-.side-panel {
-    width: 20%;
-    padding: 20px;
-    background-color: #222;
-    border-right: 2px solid #444;
+
+.header-title {
+    font-size: 24px; 
+    color: #007BFF; 
+    margin: 0; /* Remove default margins */
+}
+
+.logo {
+    height: 50px; 
+
 }
 
 .title {
@@ -46,13 +84,6 @@ html, body {
 
 .reset-button-container {
     margin-top: 20px;
-}
-
-/* Main panel styling */
-.main-panel {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
 }
 
 /* Charts container within the main panel */

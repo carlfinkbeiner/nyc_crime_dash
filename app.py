@@ -34,102 +34,108 @@ arrests_year_boro_crime_precinct = arrest_data.groupby(['year','ARREST_BORO','OF
 app = dash.Dash(__name__)
 
 app.layout = html.Div([
-    # Side panel for dropdowns and toggles
     html.Div([
-        html.H1("NYC Crime Data", className='title'),
-        html.Div(
-            "Placeholder txt that will be used to provide a brief description of the project",
-            className='static-text-box'
-        ),
-
-        # Toggles for the map type
-        dcc.RadioItems(
-            id='map-toggle',
-            options=[
-                {'label': 'Total Arrests', 'value': 'total_arrests'},
-                {'label': 'Percent Change', 'value': 'percent_change'}
-            ],
-            value='total_arrests',  # default value
-            labelStyle={'display': 'inline-block'},
-            className='radio-items'
-        ),
-
-        #Crime selection dropdown
-        html.Label("Select Crime:", className='dropdown-label',style={'color': '#FFFFFF'}),
-        dcc.Dropdown(
-            id='crime-type-dropdown',
-            options=[{'label': crime, 'value': crime} for crime in arrests_year_precinct_crime['OFNS_DESC'].unique()],
-            value=None,
-            multi=True,                
-            className='dropdown'
-        ),
-        
-        # Year and crime type dropdowns for 'Percent Change' map
-        html.Div(id='percent-change-controls', children=[
-            html.Label("Select Year 1:", className='dropdown-label',style={'color': '#FFFFFF'}),
-            dcc.Dropdown(
-                id='year1-dropdown',
-                options=[{'label': year, 'value': year} for year in arrests_year_precinct['year'].unique()],
-                value=((arrests_year_precinct['year'].max())-1),
-                className='dropdown'
-            ),
-            html.Label("Select Year 2:", className='dropdown-label',style={'color': '#FFFFFF'}),
-            dcc.Dropdown(
-                id='year2-dropdown',
-                options=[{'label': year, 'value': year} for year in arrests_year_precinct['year'].unique()],
-                value=arrests_year_precinct['year'].max(),
-                className='dropdown'
+        html.H1("NYC Crime Data", className='header-title')
+        ],
+        className='dashboard-header'
+    ),
+    #content container
+    html.Div([
+        # Side panel for dropdowns and toggles
+        html.Div([
+            html.Div(
+                "Placeholder txt that will be used to provide a brief description of the project",
+                className='static-text-box'
             ),
 
-        ], style={'display': 'none'}),  # This div is hidden by default
-        
-        # Year dropdown for 'Total Arrests' map
-        html.Div(id='total-arrests-controls', children=[
-            html.Label("Select Year:", className='dropdown-label',style={'color': '#FFFFFF'}),
+            # Toggles for the map type
+            dcc.RadioItems(
+                id='map-toggle',
+                options=[
+                    {'label': 'Total Arrests', 'value': 'total_arrests'},
+                    {'label': 'Percent Change', 'value': 'percent_change'}
+                ],
+                value='total_arrests',  # default value
+                labelStyle={'display': 'inline-block'},
+                className='radio-items'
+            ),
+
+            #Crime selection dropdown
+            html.Label("Select Crime:", className='dropdown-label',style={'color': '#FFFFFF'}),
             dcc.Dropdown(
-                id='arrest-year-dropdown',
-                options=[{'label': year, 'value': year} for year in arrests_year_precinct['year'].unique()],
-                value=arrests_year_precinct['year'].max(),
+                id='crime-type-dropdown',
+                options=[{'label': crime, 'value': crime} for crime in arrests_year_precinct_crime['OFNS_DESC'].unique()],
+                value=None,
+                multi=True,                
                 className='dropdown'
             ),
-        ]),
-        html.Button('Reset View', id='reset-button', n_clicks=0, className='reset-button')
+            
+            # Year and crime type dropdowns for 'Percent Change' map
+            html.Div(id='percent-change-controls', children=[
+                html.Label("Select Year 1:", className='dropdown-label',style={'color': '#FFFFFF'}),
+                dcc.Dropdown(
+                    id='year1-dropdown',
+                    options=[{'label': year, 'value': year} for year in arrests_year_precinct['year'].unique()],
+                    value=((arrests_year_precinct['year'].max())-1),
+                    className='dropdown'
+                ),
+                html.Label("Select Year 2:", className='dropdown-label',style={'color': '#FFFFFF'}),
+                dcc.Dropdown(
+                    id='year2-dropdown',
+                    options=[{'label': year, 'value': year} for year in arrests_year_precinct['year'].unique()],
+                    value=arrests_year_precinct['year'].max(),
+                    className='dropdown'
+                ),
 
-        
-    ], className='side-panel'),
+            ], style={'display': 'none'}),  # This div is hidden by default
+            
+            # Year dropdown for 'Total Arrests' map
+            html.Div(id='total-arrests-controls', children=[
+                html.Label("Select Year:", className='dropdown-label',style={'color': '#FFFFFF'}),
+                dcc.Dropdown(
+                    id='arrest-year-dropdown',
+                    options=[{'label': year, 'value': year} for year in arrests_year_precinct['year'].unique()],
+                    value=arrests_year_precinct['year'].max(),
+                    className='dropdown'
+                ),
+            ]),
+            html.Button('Reset View', id='reset-button', n_clicks=0, className='reset-button')
 
-    # Main panel for maps and charts
-    html.Div([
-        # Maps will be displayed here based on the toggle selection
-        dcc.Loading(
-            id="loading_maps",
-            type="default",
-            children=
-                html.Div([
-                    html.Div(dcc.Graph(id='crime-change-map', className='map-graph'), id='percent-change-map-container', style={'display': 'none'}),  # initially hidden
-                    html.Div(dcc.Graph(id='arrest-map', className='map-graph'), id='total-arrests-map-container')  # initially visible
-                    ], id='map-container')
-        ),
-        
-        # Bar charts container
-    html.Div([
-        dcc.Loading(
-            id="loading-boro-crime-bar",
-            type="default",
-            children=html.Div(dcc.Graph(id='boro-crime-bar', className='bar-graph'))
-        ),
-        dcc.Loading(
-            id="loading-month-crime-bar",
-            type="default",
-            children=html.Div(dcc.Graph(id='month-crime-bar', className='bar-graph'))
-        ),
-        dcc.Loading(
-            id="loading-precinct-crime-bar",
-            type="default",
-            children=html.Div(dcc.Graph(id='precinct-crime-bar', className='bar-graph'))
-        )
-        ], className='charts-container')    
-    ], className='main-panel'),
+            
+        ], className='side-panel'),
+         # Main panel for maps and charts
+        html.Div([
+            # Maps will be displayed here based on the toggle selection
+            dcc.Loading(
+                id="loading_maps",
+                type="default",
+                children=
+                    html.Div([
+                        html.Div(dcc.Graph(id='crime-change-map', className='map-graph'), id='percent-change-map-container', style={'display': 'none'}),  # initially hidden
+                        html.Div(dcc.Graph(id='arrest-map', className='map-graph'), id='total-arrests-map-container')  # initially visible
+                        ], id='map-container')
+            ),
+            
+            # Bar charts container
+            html.Div([
+                dcc.Loading(
+                    id="loading-boro-crime-bar",
+                    type="default",
+                    children=html.Div(dcc.Graph(id='boro-crime-bar', className='bar-graph'))
+                ),
+                dcc.Loading(
+                    id="loading-month-crime-bar",
+                    type="default",
+                    children=html.Div(dcc.Graph(id='month-crime-bar', className='bar-graph'))
+                ),
+                dcc.Loading(
+                    id="loading-precinct-crime-bar",
+                    type="default",
+                    children=html.Div(dcc.Graph(id='precinct-crime-bar', className='bar-graph'))
+                )
+                ], className='charts-container')    
+        ], className='main-panel')
+    ], className='content-container'),
     html.Div(id='hidden-div', style={'display': 'none'})
 ], className='dashboard-container')
 
