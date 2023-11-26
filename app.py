@@ -464,7 +464,9 @@ def update_monthly_bar(crime_types, selected_precinct, year):
         filtered_data = arrest_data[arrest_data['ARREST_PRECINCT'] == selected_precinct]
 
     # Handle None for crime_types
-    if crime_types is not None:
+    if crime_types is None or not crime_types:
+        filtered_data = arrest_data  # Reset to the entire dataset if no crime type is selected
+    else:
         filtered_data = filtered_data[filtered_data['OFNS_DESC'].isin(crime_types)]
 
     # Handle None for year
