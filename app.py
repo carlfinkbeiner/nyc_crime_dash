@@ -11,9 +11,9 @@ import time
 # arrest_data_url = 'https://raw.githubusercontent.com/carlfinkbeiner/nyc_crime_dash/main/data/arrest_data_processed.csv'
 # precinct_geojson_url = 'https://github.com/carlfinkbeiner/nyc_crime_dash/blob/main/data/police_precincts.geojson'
 
-arrest_data = pd.read_csv('/Users/carlfinkbeiner/Riverside_Analytics/ny_crime/arrest_data_processed.csv')
+arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/Riverside_Analytics/ny_crime/data/police_precincts.geojson') as f:
+with open('/Users/carlfinkbeiner/nyc_crime_dash/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
 
@@ -412,7 +412,7 @@ def update_bar(crime_types,selected_precinct):
     else:
         title = 'Yearly Arrests'
     
-    time.sleep(0.5)
+    time.sleep(1)
 
     arrest_bar = px.bar(arrest_data, 
             x='year', 
@@ -465,20 +465,24 @@ def update_bar(crime_types,selected_precinct):
 )
 def update_monthly_bar(crime_types, selected_precinct, year):
     # Handle None for selected_precinct
-    if selected_precinct is None:
+    if selected_precinct is None or not selected_precinct:
         filtered_data = arrest_data  # Use the entire dataset
-    else:
+
+    if selected_precinct is not None:
         filtered_data = arrest_data[arrest_data['ARREST_PRECINCT'] == selected_precinct]
 
     # Handle None for crime_types
     if crime_types is None or not crime_types:
-        filtered_data = arrest_data  # Reset to the entire dataset if no crime type is selected
-    else:
+        filtered_data = filtered_data  # Reset to the entire dataset if no crime type is selected
+    if crime_types is not None:
         filtered_data = filtered_data[filtered_data['OFNS_DESC'].isin(crime_types)]
 
     # Handle None for year
     if year is not None:
         filtered_data = filtered_data[filtered_data['year'] == year]
+
+    if year is None:
+        filtered_data = filtered_data
 
     # Group by month and BORO
     arrests_grouped = filtered_data.groupby(['month', 'ARREST_BORO']).sum()['arrest_count'].reset_index()
@@ -510,7 +514,7 @@ def update_monthly_bar(crime_types, selected_precinct, year):
 
     arrests_grouped = arrests_grouped.sort_values('month')
     
-    time.sleep(0.5)
+    time.sleep(1)
 
     monthly_bar = px.line(
         arrests_grouped,
