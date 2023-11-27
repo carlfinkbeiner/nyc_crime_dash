@@ -377,6 +377,7 @@ def update_arrest_map(year, crime_types,selected_map):
     return map
 
 
+
 #Arrest count bar
 @app.callback(
     Output(component_id='boro-crime-bar',component_property='figure'),
@@ -411,7 +412,7 @@ def update_bar(crime_types,selected_precinct):
     else:
         title = 'Yearly Arrests'
     
-    time.sleep(1)
+    time.sleep(0.5)
 
     arrest_bar = px.bar(arrest_data, 
             x='year', 
@@ -509,7 +510,7 @@ def update_monthly_bar(crime_types, selected_precinct, year):
 
     arrests_grouped = arrests_grouped.sort_values('month')
     
-    time.sleep(1)
+    time.sleep(0.5)
 
     monthly_bar = px.line(
         arrests_grouped,
@@ -590,7 +591,7 @@ def update_precinct_bar(year, selected_precinct):
 
 
 
-    time.sleep(1)
+    time.sleep(0.5)
     bar = px.bar(
         top_10, 
         x='arrest_count', 
