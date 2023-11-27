@@ -35,7 +35,13 @@ app = dash.Dash(__name__)
 
 app.layout = html.Div([
     html.Div([
-        html.H1("NYC Crime Data", className='header-title')
+        html.Div([
+            html.H1("NYC Crime Data", className='header-title')
+            ], className='header-left'
+        ),
+        html.Div([
+            html.Img(src='/assets/plotly_white.png', className='logo')
+            ], className='header-right')
         ],
         className='dashboard-header'
     ),

@@ -6,14 +6,36 @@
     color: #fff; /* Text color set to white for visibility */
 }
 
-/* Header Styling */
 .dashboard-header {
-    width: 100%; /* Ensure the header spans the full width */
-    background-color: #333; /* Matching the dashboard theme */
-    color: #fff; /* White color for the title */
-    padding: 10px 20px; /* Add some padding */
-    border-bottom: 2px solid #444; /* A bottom border to separate from the rest of the dashboard */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+    padding: 10px; /* Adjusted padding */
+    border-bottom: 2px solid #444;
+    overflow: hidden; /* Prevents overflow */
 }
+
+.header-left {
+    flex-grow: 1;
+    padding: 10px 0; /* Make sure the title has space */
+}
+
+.header-right {
+    flex-shrink: 0; /* Prevent the logo container from shrinking */
+    padding: 10px 0; /* Provides padding without pushing the image out */
+}
+
+.logo {
+    height: auto; /* Adjust height automatically */
+    max-height: 100%; /* Make sure the image is never taller than the header */
+    width: auto; /* Adjust width automatically */
+    max-width: 100%; /* Prevents the logo from being wider than its container */
+}
+
+
+
 
 /* Content container for side panel and main panel */
 .content-container {
