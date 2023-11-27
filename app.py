@@ -36,7 +36,7 @@ app = dash.Dash(__name__)
 app.layout = html.Div([
     html.Div([
         html.Div([
-            html.H1("NYC Crime Data", className='header-title')
+            html.H1("NYC Crime Dashboard", className='header-title')
             ], className='header-left'
         ),
         html.Div([
