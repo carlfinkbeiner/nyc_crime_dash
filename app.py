@@ -346,7 +346,7 @@ def update_arrest_map(year, crime_types,selected_map):
 
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
-    map = fig.update_layout(
+    fig = fig.update_layout(
         legend=dict(
             title=None,  # Removes the title
             orientation='h',
@@ -364,7 +364,7 @@ def update_arrest_map(year, crime_types,selected_map):
     )
 
     # Customize the color bar
-    map.update_coloraxes(colorbar=dict(
+    fig.update_coloraxes(colorbar=dict(
         thickness=20,  # Controls the thickness of the color bar
         len=0.3,  # Controls the length of the color bar (percentage of the figure height)
         yanchor='bottom',
@@ -374,7 +374,7 @@ def update_arrest_map(year, crime_types,selected_map):
     ))
 
 
-    return map
+    return fig
 
 
 
@@ -464,25 +464,21 @@ def update_bar(crime_types,selected_precinct):
      Input(component_id='arrest-year-dropdown', component_property='value')]
 )
 def update_monthly_bar(crime_types, selected_precinct, year):
-    # Handle None for selected_precinct
-    if selected_precinct is None or not selected_precinct:
-        filtered_data = arrest_data  # Use the entire dataset
-
-    if selected_precinct is not None:
+    # Initial data filtering based on selected_precinct
+    if selected_precinct:
         filtered_data = arrest_data[arrest_data['ARREST_PRECINCT'] == selected_precinct]
+    else:
+        filtered_data = arrest_data
 
-    # Handle None for crime_types
-    if crime_types is None or not crime_types:
-        filtered_data = filtered_data  # Reset to the entire dataset if no crime type is selected
-    if crime_types is not None:
+    # Filtering based on crime_types
+    if crime_types:
         filtered_data = filtered_data[filtered_data['OFNS_DESC'].isin(crime_types)]
+    # No else needed here, if crime_types is None or empty, filtered_data remains as is
 
-    # Handle None for year
-    if year is not None:
+    # Filtering based on year
+    if year:
         filtered_data = filtered_data[filtered_data['year'] == year]
-
-    if year is None:
-        filtered_data = filtered_data
+    # No else needed here as well, if year is None, filtered_data remains as is
 
     # Group by month and BORO
     arrests_grouped = filtered_data.groupby(['month', 'ARREST_BORO']).sum()['arrest_count'].reset_index()
