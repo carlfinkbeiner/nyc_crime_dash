@@ -40,6 +40,9 @@ app.layout = html.Div([
             ], className='header-left'
         ),
         html.Div([
+            html.Img(src='/assets/ra_white.png', className='logo')
+            ], className='header-right'),
+        html.Div([
             html.Img(src='/assets/plotly_white.png', className='logo')
             ], className='header-right')
         ],
