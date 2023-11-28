@@ -13,7 +13,7 @@ import time
 
 arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_precincts.geojson') as f:
+with open('/Users/carlfinkbeiner/nyc_crime_dash/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
 
@@ -44,7 +44,7 @@ app = dash.Dash(__name__)
 app.layout = html.Div([
     html.Div([
         html.Div([
-            html.H1("NYC Crime Dashboard", className='header-title')
+            html.H1("Crime in New York City", className='header-title')
             ], className='header-left'
         ),
         html.Div([
@@ -116,7 +116,7 @@ app.layout = html.Div([
                     className='dropdown'
                 ),
             ]),
-            html.Button('Reset View', id='reset-button', n_clicks=0, className='reset-button')
+            html.Button('Reset Dashboard', id='reset-button', n_clicks=0, className='reset-button')
 
             
         ], className='side-panel'),
@@ -273,11 +273,11 @@ def update_percent_change_map(year1, year2, crime_types, selected_map):
                               )
 
 
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    #fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
     fig.update_layout(
         legend=dict(
-            title='',  # Removes the title
+            title=None,  # Removes the title
             orientation='h',
             yanchor='bottom',
             y=0.5,  # Adjust this to move the legend up or down on the map
@@ -289,7 +289,11 @@ def update_percent_change_map(year1, year2, crime_types, selected_map):
             color="white"
             ),
         legend_traceorder='reversed',
-        margin=dict(l=0, r=0, t=0, b=0)  # Adjust margins to fit the legend inside the map area
+        margin=dict(l=0, r=0, t=0, b=0),  # Adjust margins to fit the legend inside the map area
+        title='Precent Change in Arrests',
+        title_x=0.027,
+        title_y=0.95,
+        legend_title=None
     )
 
     # Customize the color bar
@@ -359,7 +363,7 @@ def update_arrest_map(year, crime_types,selected_map):
 
     fig = fig.update_layout(
         legend=dict(
-            title=None,  # Removes the title
+            title_text="",  # Removes the title
             orientation='h',
             yanchor='bottom',
             y=0.5,  # Adjust this to move the legend up or down on the map
@@ -371,7 +375,11 @@ def update_arrest_map(year, crime_types,selected_map):
             color="white"
             ),
         legend_traceorder='reversed',
-        margin=dict(l=0, r=0, t=0, b=0)  # Adjust margins to fit the legend inside the map area
+        margin=dict(l=0, r=0, t=0, b=0),  # Adjust margins to fit the legend inside the map area,
+        title=f'Arrests in {year}',
+        title_x=0.027,
+        title_y=0.95,
+        legend_title=""
     )
 
     # Customize the color bar
@@ -383,6 +391,10 @@ def update_arrest_map(year, crime_types,selected_map):
         xanchor='right',
         x=0.95  # Adjust this to move the color bar left or right
     ))
+
+
+
+
 
 
     return fig

@@ -109,6 +109,10 @@ body {
   margin-top: 20px;
 }
 
+.reset-button {
+  border-radius: 10px; /* This property rounds the corners of the button */
+}
+
 /* Charts container within the main panel */
 .charts-container {
   display: grid;
@@ -135,7 +139,7 @@ body {
 /* Style for the dropdown label */
 .dropdown-label {
   font-family: Helvetica, sans-serif; /* Use Helvetica as the primary font, with a generic sans-serif as a fallback */
-  color: #FFFFFF; /* White color text */
+  color: #ffffff; /* White color text */
   padding-bottom: 10px;
 }
 
@@ -143,7 +147,6 @@ body {
   padding-bottom: 20px;
   padding-top: 10px;
 }
-
 
 /* CSS for the dropdown selected option */
 .Select-value,
