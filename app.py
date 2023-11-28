@@ -13,9 +13,17 @@ import time
 
 arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/nyc_crime_dash/data/police_precincts.geojson') as f:
+with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
+
+borough_colors = {
+    "Manhattan": "#1f77b4",
+    "Brooklyn": "#ff7f0e",
+    "Queens": "#2ca02c",
+    "Bronx": "#d62728",
+    "Staten Island": "#9467bd"
+}
 
 custom_background_color = '#333333'
 #https://dash-example-index.herokuapp.com/cheatsheet
@@ -426,7 +434,8 @@ def update_bar(crime_types,selected_precinct):
                 'year': 'Year',
                 'arrest_count': 'Arrest count',
                 'ARREST_BORO': 'Borough'
-            }
+            },
+            color_discrete_map=borough_colors
     )
     
     arrest_bar.update_layout({
@@ -524,7 +533,8 @@ def update_monthly_bar(crime_types, selected_precinct, year):
             'month': 'Month',
             'arrest_count': 'Arrest Count',
             'ARREST_BORO': 'Borough'
-         }
+         },
+         color_discrete_map=borough_colors
     )
 
     monthly_bar.update_layout({
