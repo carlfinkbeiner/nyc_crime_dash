@@ -18,11 +18,11 @@ with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_
 
 
 borough_colors = {
-    "Manhattan": "#1f77b4",
-    "Brooklyn": "#ff7f0e",
-    "Queens": "#2ca02c",
-    "Bronx": "#d62728",
-    "Staten Island": "#9467bd"
+    "Manhattan": "#db1f48",
+    "Brooklyn": "#C3B678",
+    "Queens": "#01949a",
+    "Bronx": "#a65628",
+    "Staten Island": "#8D82B6"
 }
 
 custom_background_color = '#333333'
@@ -61,10 +61,10 @@ app.layout = html.Div([
         # Side panel for dropdowns and toggles
         html.Div([
             html.Div(
-                "Placeholder txt that will be used to provide a brief description of the project",
+                "Placeholder txt that will be used to provide a brief description of the project tPlaceholder txt that will be used to provide a brief description of the project tPlaceholder txt that will be used to provide a brief description of the project tPlaceholder txt that will be used to provide a brief description of the project t",
                 className='static-text-box'
             ),
-
+            html.Label("Map Type:", className='dropdown-label',style={'color': '#FFFFFF'}),
             # Toggles for the map type
             dcc.RadioItems(
                 id='map-toggle',
@@ -560,6 +560,8 @@ def update_monthly_bar(crime_types, selected_precinct, year):
         },
         title_pad=dict(t=1),  # Adjust the padding to give the title some space if needed 
         margin=dict(t=60))
+    
+    monthly_bar.update_traces(line=dict(width=3))
 
     return monthly_bar
 

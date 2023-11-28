@@ -13,6 +13,7 @@
   background-color: #333;
   color: #fff;
   padding: 10px; /* Adjusted padding */
+  padding-left: 30px;
   border-bottom: 2px solid #444;
   overflow: hidden; /* Prevents overflow */
 }
@@ -72,7 +73,7 @@ body {
 }
 
 .header-title {
-  font-size: 24px;
+  font-size: 34px;
   font-family: Helvetica;
   color: #007bff;
   margin: 0; /* Remove default margins */
@@ -97,6 +98,7 @@ body {
   margin-bottom: 20px; /* Space below the text box */
   overflow-y: auto; /* Allows for a scrollbar if the text overflows */
   max-height: 150px; /* Maximum height for the text box */
+  font-family: Helvetica;
 }
 
 .dropdown-container {
@@ -127,34 +129,53 @@ body {
 .Select-menu-outer {
   background-color: #222;
   color: #fff;
+  font-family: Helvetica;
 }
+
+/* Style for the dropdown label */
+.dropdown-label {
+  font-family: Helvetica, sans-serif; /* Use Helvetica as the primary font, with a generic sans-serif as a fallback */
+  color: #FFFFFF; /* White color text */
+  padding-bottom: 10px;
+}
+
+.dropdown {
+  padding-bottom: 20px;
+  padding-top: 10px;
+}
+
 
 /* CSS for the dropdown selected option */
 .Select-value,
 .Select-value-label {
   color: white !important; /* Ensure this overrides any other styles */
+  font-family: Helvetica;
 }
 
 /* CSS for the dropdown option when it's hovered over in the menu */
 .Select-option.is-focused {
-  background-color: #444 !important; /* Darker background for the focused option */
+  background-color: #444 !important;
+  font-family: Helvetica; /* Darker background for the focused option */
 }
 
 /* CSS for the dropdown option when it's selected */
 .Select-option.is-selected {
   background-color: #333 !important; /* Dark background for the selected option */
   color: white !important;
+  font-family: Helvetica;
 }
 
 /* CSS for the placeholder of the dropdown */
 .Select-placeholder {
   color: white !important; /* White color for the placeholder text */
+  font-family: Helvetica;
 }
 
 /* CSS for the control of the dropdown */
 .Select-control {
   background-color: #333 !important; /* Match the background color to your app's theme */
   border-color: #555 !important; /* Matching border color */
+  font-family: Helvetica;
 }
 
 /* Style buttons */
@@ -165,6 +186,7 @@ button {
   padding: 10px 20px;
   margin: 10px 0;
   cursor: pointer;
+  font-family: Helvetica;
 }
 
 button:hover {
@@ -187,12 +209,16 @@ button:hover {
   gap: 20px; /* Add space between radio items */
   color: #fff; /* White text color for better readability on a dark background */
   font-size: 16px; /* Increase font size for better visibility */
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-family: Helvetica;
 }
 
 /* Individual radio buttons styling */
 .radio-items input[type="radio"] {
   accent-color: #007bff; /* Change the selection color */
   margin-right: 5px; /* Space out the radio button from its label */
+  font-family: Helvetica;
 }
 
 /* Labels for radio buttons styling */
@@ -201,6 +227,7 @@ button:hover {
   padding: 5px 10px; /* Add some padding for clickable area */
   border-radius: 5px; /* Optional: Add rounded corners to the labels */
   transition: background-color 0.3s; /* Smooth transition for background color change */
+  font-family: Helvetica;
 }
 
 /* Hover effect for labels */
