@@ -13,7 +13,7 @@ import time
 
 arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_precincts.geojson') as f:
+with open('/Users/carlfinkbeiner/nyc_crime_dash/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
 
@@ -69,8 +69,6 @@ app.layout = html.Div([
             html.Div(
                 dcc.Markdown("""
                     This dashboard is designed to allow a user to explore crime trends in New York City. Arrest data is sourced from the NYS Open Data Program and covers all years from 2006 to 2022. This dataset is updated annually and was initially released to the public in 2018 to offer greater insight into police enforcement activity.
-
-                     The full dashboard is filterable by crime type, and year. Bar charts will dynamically filter further by police precinct after a click is registered on the Arrest Map.
                     """),
                 className='static-text-box'
             ),
