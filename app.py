@@ -13,7 +13,7 @@ import time
 
 arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/nyc_crime_dash/data/police_precincts.geojson') as f:
+with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
 
@@ -58,10 +58,14 @@ app.layout = html.Div([
     ),
     #content container
     html.Div([
-        # Side panel for dropdowns and toggles
+        # Side panel for dropdowns and toggles  
         html.Div([
             html.Div(
-                "Placeholder txt that will be used to provide a brief description of the project tPlaceholder txt that will be used to provide a brief description of the project tPlaceholder txt that will be used to provide a brief description of the project tPlaceholder txt that will be used to provide a brief description of the project t",
+                dcc.Markdown("""
+                    This dashboard is designed to allow a user to explore crime trends in New York City. Arrest data is sourced from the NYS Open Data Program and covers all years from 2006 to 2022. This dataset is updated annually and was initially released to the public in 2018 to offer greater insight into police enforcement activity.
+
+                     The full dashboard is filterable by crime type, and year. Bar charts will dynamically filter further by police precinct after a click is registered on the Arrest Map.
+                    """),
                 className='static-text-box'
             ),
             html.Label("Map Type:", className='dropdown-label',style={'color': '#FFFFFF'}),
@@ -293,7 +297,8 @@ def update_percent_change_map(year1, year2, crime_types, selected_map):
         title='Precent Change in Arrests',
         title_x=0.027,
         title_y=0.95,
-        legend_title=None
+        legend_title=None,
+        font_family="Helvetica"
     )
 
     # Customize the color bar
@@ -379,7 +384,8 @@ def update_arrest_map(year, crime_types,selected_map):
         title=f'Arrests in {year}',
         title_x=0.027,
         title_y=0.95,
-        legend_title=""
+        legend_title="",
+        font_family="Helvetica"
     )
 
     # Customize the color bar
@@ -473,7 +479,8 @@ def update_bar(crime_types,selected_precinct):
                 'xanchor': 'left',
                 'yanchor': 'top'
             },
-            title_pad=dict(t=1)  # Adjust the padding to give the title some space if needed           
+            title_pad=dict(t=1),
+            font_family="Helvetica"  # Adjust the padding to give the title some space if needed           
     )
 
     return arrest_bar
@@ -571,7 +578,9 @@ def update_monthly_bar(crime_types, selected_precinct, year):
             'yanchor': 'top'
         },
         title_pad=dict(t=1),  # Adjust the padding to give the title some space if needed 
-        margin=dict(t=60))
+        margin=dict(t=60),
+        font_family="Helvetica"
+    )
     
     monthly_bar.update_traces(line=dict(width=3))
 
@@ -644,7 +653,8 @@ def update_precinct_bar(year, selected_precinct):
                         'xanchor': 'left',
                         'yanchor': 'top'
                     },
-                    title_pad=dict(t=1)  # Adjust the padding to give the title some space if needed 
+                    title_pad=dict(t=1),  # Adjust the padding to give the title some space if needed 
+                    font_family="Helvetica"
                 )
 
     return fig

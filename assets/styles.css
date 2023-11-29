@@ -94,10 +94,10 @@ body {
   background-color: #222; /* Matching the side-panel background color */
   color: #fff; /* White text color for readability */
   border: 1px solid #444; /* Border to match the overall style */
-  padding: 10px; /* Inner spacing for text */
+  padding: 7px; /* Inner spacing for text */
   margin-bottom: 20px; /* Space below the text box */
   overflow-y: auto; /* Allows for a scrollbar if the text overflows */
-  max-height: 150px; /* Maximum height for the text box */
+  max-height: 250px; /* Maximum height for the text box */
   font-family: Helvetica;
 }
 
@@ -141,6 +141,7 @@ body {
   font-family: Helvetica, sans-serif; /* Use Helvetica as the primary font, with a generic sans-serif as a fallback */
   color: #ffffff; /* White color text */
   padding-bottom: 10px;
+  font-weight: bold;
 }
 
 .dropdown {
