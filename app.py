@@ -223,6 +223,7 @@ def update_view(reset_clicks, clickData, hidden_div_state):
 
     return hidden_div_state
 
+
 #Reset crime dropdown
 @app.callback(
        Output('crime-type-dropdown','value'),
@@ -421,11 +422,6 @@ def update_arrest_map(year, crime_types,selected_map):
         xanchor='right',
         x=0.95  # Adjust this to move the color bar left or right
     ))
-
-
-
-
-
 
     return fig
 
