@@ -48,11 +48,17 @@ app.layout = html.Div([
             ], className='header-left'
         ),
         html.Div([
-            html.Img(src='/assets/ra_white.png', className='logo')
-            ], className='header-right'),
+            html.A([
+                html.Img(src='/assets/ra_white.png', className='logo')
+                ], href='https://www.riverside-analytics.com/', target='_blank')
+            ], className='header-right'
+        ),
         html.Div([
-            html.Img(src='/assets/plotly_white.png', className='logo')
-            ], className='header-right')
+            html.A([
+                html.Img(src='assets/plotly_white.png', className='logo')
+                ], href='https://dash.plotly.com/', target='_blank')
+            ], className='header-right'
+        ),
         ],
         className='dashboard-header'
     ),
@@ -157,7 +163,8 @@ app.layout = html.Div([
                 ], className='charts-container')    
         ], className='main-panel')
     ], className='content-container'),
-    html.Div(id='hidden-div', style={'display': 'none'})
+    html.Div(id='hidden-div', style={'display': 'none'}),
+    html.Div(id='dummy-div', children='constant', style={'display': 'none'})
 ], className='dashboard-container')
 
 
@@ -216,7 +223,24 @@ def update_view(reset_clicks, clickData, hidden_div_state):
 
     return hidden_div_state
 
+#Reset crime dropdown
+@app.callback(
+       Output('crime-type-dropdown','value'),
+       [Input('reset-button','n_clicks')],
+       [State('crime-type-dropdown','value')]
+)
+def update_dropdown(reset_clicks,dropdown_state):
+    ctx = dash.callback_context
 
+    if not ctx.triggered:
+        return dash.no_update
+    
+    trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
+
+    if trigger_id == 'reset-button':
+        return None
+    else:
+        return dropdown_state
 
 # Percent change arrest map
 @app.callback(
@@ -411,9 +435,10 @@ def update_arrest_map(year, crime_types,selected_map):
 @app.callback(
     Output(component_id='boro-crime-bar',component_property='figure'),
     [Input(component_id='crime-type-dropdown',component_property='value'),
-    Input(component_id='hidden-div',component_property='children')]
+    Input(component_id='hidden-div',component_property='children'),
+    Input(component_id='dummy-div',component_property='children')]
 )
-def update_bar(crime_types,selected_precinct):
+def update_bar(crime_types,selected_precinct,dummy_value):
 
     boro_arrests = arrests_year_boro_crime_precinct
 
