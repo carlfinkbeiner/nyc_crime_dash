@@ -13,7 +13,7 @@ import time
 
 arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/nyc_crime_dash/data/police_precincts.geojson') as f:
+with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
 
@@ -386,8 +386,6 @@ def update_arrest_map(year, crime_types,selected_map):
                                         }
     )           
 
-
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
     fig = fig.update_layout(
         legend=dict(
