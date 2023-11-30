@@ -13,7 +13,7 @@ import time
 
 arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_precincts.geojson') as f:
+with open('/Users/carlfinkbeiner/nyc_crime_dash/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
 
@@ -672,7 +672,7 @@ def update_precinct_bar(year, selected_precinct):
 
 
 
-    time.sleep(0.5)
+    time.sleep(1)
     bar = px.bar(
         top_10, 
         x='arrest_count', 
