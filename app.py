@@ -338,14 +338,30 @@ def update_percent_change_map(year1, year2, crime_types, selected_map):
 
 
 
+
+
+nyc_precincts_lookup = {feature['properties']['precinct']: feature for feature in nyc_precincts_geojson['features']}
+
+def get_highlights(selected_precinct, precinct_lookup=nyc_precincts_lookup):
+    geojson_highlights = {'type': 'FeatureCollection', 'features': []}
+    target = str(selected_precinct)
+
+    if target in precinct_lookup:
+        geojson_highlights['features'].append(precinct_lookup[target])
+    return geojson_highlights
+
+
+
 #Arrest count map
 @app.callback(
     Output('arrest-map', 'figure'),
     [Input('arrest-year-dropdown', 'value'),
      Input('crime-type-dropdown', 'value'),
-     Input('map-toggle', 'value')]
+     Input('map-toggle', 'value'),
+     Input('hidden-div','children')]
+
 )
-def update_arrest_map(year, crime_types,selected_map):
+def update_arrest_map(year, crime_types,selected_map,selected_precinct):
 
     #Do not update if total_arrests not selected
     if selected_map != 'total_arrests':
@@ -418,6 +434,18 @@ def update_arrest_map(year, crime_types,selected_map):
         xanchor='right',
         x=0.95  # Adjust this to move the color bar left or right
     ))
+
+    if selected_precinct is not None:
+
+        highlights = get_highlights(selected_precinct)
+
+        fig.add_trace(
+        px.choropleth_mapbox(data_filtered, geojson=highlights, 
+                             color="arrest_count",
+                             locations="ARREST_PRECINCT", 
+                             featureidkey="properties.precinct",                                 
+                             opacity=1).data[0]
+    )
 
     return fig
 
