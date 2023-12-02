@@ -57,7 +57,7 @@ app.layout = html.Div([
         ),
         html.Div([
             html.A([
-                html.Img(src='assets/plotly_white.png', className='logo')
+                html.Img(src='assets/dash-logo.png', className='logo')
                 ], href='https://dash.plotly.com/', target='_blank')
             ], className='header-right'
         ),
@@ -397,20 +397,20 @@ def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_
             # Add a new trace for the highlighted precinct
             highlights = get_highlights(selected_precinct)
 
+                        # Extracting coordinates from the GeoJSON for the selected precinct
+            coords = highlights['features'][0]['geometry']['coordinates'][0][0]
+            lons, lats = zip(*coords)
 
-            # Adding the highlight trace
-            highlight_trace = go.Choroplethmapbox(
-                geojson=highlights, 
-                locations=[selected_precinct],
-                featureidkey="properties.precinct",
-                z=[1],  # Dummy variable for choropleth
-                showscale=False,  # Hide the color scale
-                marker_line_color='gold',
-                marker_line_width=3,
-                marker_opacity=0.9
+            # Creating a scattermapbox trace for the highlighted border
+            border_trace = go.Scattermapbox(
+                lon=lons,
+                lat=lats,
+                mode='lines',
+                line=dict(color='gold', width=3),
+                hoverinfo='skip'  # Disable hover info for the border trace
             )
+            fig.add_trace(border_trace)
 
-            fig.add_trace(highlight_trace)
 
         return fig
 
