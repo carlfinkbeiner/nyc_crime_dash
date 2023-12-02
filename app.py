@@ -1,3 +1,6 @@
+
+
+
 import dash
 import requests
 from dash import html, dcc, Input, Output, State
@@ -382,41 +385,59 @@ def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_
 
         fig = go.Figure(current_fig)
 
-        # Convert fig.data to a list, remove the last trace if more than one exists
-        # Remove the previous highlight trace, if it exists
-        
-        traces = list(fig.data)
-        if len(traces) > 1:
-            traces = traces[:-1]  # Remove the last trace
-        fig.data = traces
+        fig_data = current_fig['data'].copy()
+        fig_layout = current_fig['layout'].copy()
 
-        # Remove the previous highlight trace, if it exists
-        # Assuming the last trace is always the highlight
+        # Filter out the highlight traces based on their 'name' attribute
+        # We can safely assume that all traces in fig_data are dictionaries
+        fig_data = [trace for trace in fig_data if trace.get('name') != 'highlight']
+
+        # Create a new figure with the filtered traces and the same layout
+        fig = go.Figure(data=fig_data, layout=fig_layout)
+
 
         if selected_precinct is not None:
             # Add a new trace for the highlighted precinct
             highlights = get_highlights(selected_precinct)
-
-                        # Extracting coordinates from the GeoJSON for the selected precinct
-            coords = highlights['features'][0]['geometry']['coordinates'][0][0]
-            lons, lats = zip(*coords)
-
-            # Creating a scattermapbox trace for the highlighted border
-            border_trace = go.Scattermapbox(
-                lon=lons,
-                lat=lats,
-                mode='lines',
-                line=dict(color='gold', width=3),
-                hoverinfo='skip'  # Disable hover info for the border trace
-            )
-            fig.add_trace(border_trace)
-
+            # Iterate over all geographic features of the selected precinct
+            for feature in highlights['features']:
+                if feature['geometry']['type'] == 'MultiPolygon':
+                    # Iterate through each polygon in the MultiPolygon
+                    for poly in feature['geometry']['coordinates']:
+                        for coords in poly:
+                            lons, lats = zip(*coords)
+                            border_trace = go.Scattermapbox(
+                                lon=lons,
+                                lat=lats,
+                                mode='lines',
+                                line=dict(color='gold', width=3),
+                                hoverinfo='skip',
+                                showlegend=False,
+                                name='highlight'
+                            )
+                            fig.add_trace(border_trace)
+                elif feature['geometry']['type'] == 'Polygon':
+                    # Directly use the coordinates in the Polygon
+                    for coords in feature['geometry']['coordinates']:
+                        lons, lats = zip(*coords)
+                        border_trace = go.Scattermapbox(
+                            lon=lons,
+                            lat=lats,
+                            mode='lines',
+                            line=dict(color='gold', width=3),
+                            hoverinfo='skip',
+                            showlegend=False,
+                            name='highlight'
+                        )
+                        fig.add_trace(border_trace)
 
         return fig
+        
+
 
 
     else:
-            # Filter data for the selected years
+        # Filter data for the selected years
         data_filtered = arrests_year_precinct[arrests_year_precinct['year'] == year]
 
 
@@ -523,23 +544,8 @@ def update_bar(crime_types,selected_precinct,dummy_value):
 
 
     title = 'Yearly Arrests'
-
-    # if selected_precinct is None and crime_types is None:
-    #     title = 'Yearly Arrests'
     
-    # elif selected_precinct is not None and crime_types is not None:
-    #     title = f'Yearly Arrests in Precinct {selected_precinct} (filtered by crime)'
-    
-    # elif selected_precinct:
-    #     title = f'Yearly Arrests in Precinct {selected_precinct}'
-    
-    # elif crime_types:
-    #     title = 'Yearly Arrests (filtered by crime)'
-    
-    # else:
-    #     title = 'Yearly Arrests'
-    
-    time.sleep(0.5)
+    time.sleep(0.25)
 
     arrest_bar = px.bar(arrest_data, 
             x='year', 
@@ -614,24 +620,6 @@ def update_monthly_bar(crime_types, selected_precinct, year):
 
     #Getting title
     title = 'Monthly Arrests'
-    # if selected_precinct is None and crime_types is None and year is None:
-    #     title = 'Monthly Arrests'
-    
-    # elif selected_precinct is not None and crime_types is not None and year is not None:
-    #     title = f'Monthly Arrests in Precinct {selected_precinct} in {year} (filtered by crime)'
-    
-    # elif selected_precinct is not None and year is not None:
-    #     title = f'Monthly Arrests in Precinct {selected_precinct} in {year}'
-    
-    # elif year is not None:
-    #     title = f'Monthly Arrests in {year}'
-    
-    # elif crime_types is not None and year is not None:
-    #     title = f'Monthly Arrests in {year}(filtered by crime)'
-    
-    # else:
-    #     title = 'Monthly Arrests'
-        
 
 
     months_ordered = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -640,7 +628,7 @@ def update_monthly_bar(crime_types, selected_precinct, year):
 
     arrests_grouped = arrests_grouped.sort_values('month')
     
-    time.sleep(0.5)
+    time.sleep(0.25)
 
     monthly_bar = px.line(
         arrests_grouped,
@@ -710,25 +698,8 @@ def update_precinct_bar(year, selected_precinct):
 
     #Getting title
     title = 'Arrest Types'
-    # if selected_precinct is None and year is None:
-    #     title = 'Arrest Types'
-    
-    # elif selected_precinct is not None and year is not None:
-    #     title = f'Arrest Types in Precinct {selected_precinct} in {year}'
-    
-    # elif selected_precinct:
-    #     title = f'Arrest Types in Precinct {selected_precinct}'
-    
-    # elif year:
-    #     title = f'Arrest Types in {year}'
-    
-    # else:
-    #     title = 'Arrest Types'
 
-
-
-
-    time.sleep(0.5)
+    time.sleep(0.25)
     bar = px.bar(
         top_10, 
         x='arrest_count', 
