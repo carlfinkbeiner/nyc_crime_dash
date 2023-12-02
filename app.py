@@ -13,7 +13,7 @@ import time
 
 arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/nyc_crime_dash/data/police_precincts.geojson') as f:
+with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
 
@@ -30,6 +30,8 @@ custom_background_color = '#333333'
 
 # Aggregating total arrests per year and precinct
 arrests_year_precinct = arrest_data.groupby(['year', 'ARREST_PRECINCT']).sum()['arrest_count'].reset_index()
+
+
 arrests_year_precinct_crime = arrest_data.groupby(['year','ARREST_PRECINCT','OFNS_DESC']).sum()['arrest_count'].reset_index()
 arrests_year_boro = arrest_data.groupby(['year','ARREST_BORO']).sum()['arrest_count'].reset_index()
 arrests_year_boro_crime = arrest_data.groupby(['year','ARREST_BORO','OFNS_DESC']).sum()['arrest_count'].reset_index()
@@ -68,7 +70,7 @@ app.layout = html.Div([
         html.Div([
             html.Div(
                 dcc.Markdown("""
-                    This dashboard is designed to allow a user to explore crime trends in New York City. Arrest data is sourced from the NYS Open Data Program and covers all years from 2006 to 2022. This dataset is updated annually and was initially released to the public in 2018 to offer greater insight into police enforcement activity.
+                    Arrest data is sourced from the NYS Open Data Program and covers all years from 2006 to 2022. This dataset is updated annually and was initially released to the public in 2018 to offer greater insight into police enforcement activity.
                     """),
                 className='static-text-box'
             ),
@@ -486,7 +488,7 @@ def update_bar(crime_types,selected_precinct,dummy_value):
     else:
         title = 'Yearly Arrests'
     
-    time.sleep(1)
+    time.sleep(0.5)
 
     arrest_bar = px.bar(arrest_data, 
             x='year', 
@@ -586,7 +588,7 @@ def update_monthly_bar(crime_types, selected_precinct, year):
 
     arrests_grouped = arrests_grouped.sort_values('month')
     
-    time.sleep(1)
+    time.sleep(0.5)
 
     monthly_bar = px.line(
         arrests_grouped,
@@ -672,7 +674,7 @@ def update_precinct_bar(year, selected_precinct):
 
 
 
-    time.sleep(1)
+    time.sleep(0.5)
     bar = px.bar(
         top_10, 
         x='arrest_count', 
