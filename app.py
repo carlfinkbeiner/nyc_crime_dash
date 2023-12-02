@@ -377,7 +377,7 @@ def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_
     
     trigger_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
 
-    if trigger_id == 'hidden-div':
+    if trigger_id == 'hidden-div' and selected_precinct:
 
         # Ensure the figure is not None
         if not current_fig:
