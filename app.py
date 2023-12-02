@@ -70,7 +70,9 @@ app.layout = html.Div([
         html.Div([
             html.Div(
                 dcc.Markdown("""
-                    Arrest data is sourced from the NYS Open Data Program and covers all years from 2006 to 2022. This dataset is updated annually and was initially released to the public in 2018 to offer greater insight into police enforcement activity.
+                    Arrest data is sourced from the NYS Open Data Program and covers all years from 2006 to 2022. 
+                             
+                    This dataset is updated annually and was initially released to the public in 2018 to offer greater insight into police enforcement activity.
                     """),
                 className='static-text-box'
             ),
@@ -133,15 +135,15 @@ app.layout = html.Div([
          # Main panel for maps and charts
         html.Div([
             # Maps will be displayed here based on the toggle selection
-            dcc.Loading(
-                id="loading_maps",
-                type="default",
-                children=
-                    html.Div([
-                        html.Div(dcc.Graph(id='crime-change-map', className='map-graph'), id='percent-change-map-container', style={'display': 'none'}),  # initially hidden
-                        html.Div(dcc.Graph(id='arrest-map', className='map-graph'), id='total-arrests-map-container')  # initially visible
-                        ], id='map-container')
-            ),
+            # dcc.Loading(
+            #     id="loading_maps",
+            #     type="default",
+            #     children=
+            html.Div([
+                html.Div(dcc.Graph(id='crime-change-map', className='map-graph'), id='percent-change-map-container', style={'display': 'none'}),  # initially hidden
+                html.Div(dcc.Graph(id='arrest-map', className='map-graph'), id='total-arrests-map-container')  # initially visible
+                ], id='map-container'),
+            #),
             
             # Bar charts container
             html.Div([
@@ -360,96 +362,142 @@ def get_highlights(selected_precinct, precinct_lookup=nyc_precincts_lookup):
     [Input('arrest-year-dropdown', 'value'),
      Input('crime-type-dropdown', 'value'),
      Input('map-toggle', 'value'),
-     Input('hidden-div','children')]
+     Input('hidden-div','children')],
+     [State('arrest-map','figure')]
 
 )
-def update_arrest_map(year, crime_types,selected_map,selected_precinct):
+def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_fig):
 
     #Do not update if total_arrests not selected
     if selected_map != 'total_arrests':
         return dash.no_update  # Don't update this graph unless it's selected
-
     
-    # Filter data for the selected years
-    data_filtered = arrests_year_precinct[arrests_year_precinct['year'] == year]
+    trigger_id = dash.callback_context.triggered[0]['prop_id'].split('.')[0]
+
+    if trigger_id == 'hidden-div':
+
+        # Ensure the figure is not None
+        if not current_fig:
+            raise dash.exceptions.PreventUpdate
+
+        fig = go.Figure(current_fig)
+
+        # Convert fig.data to a list, remove the last trace if more than one exists
+        # Remove the previous highlight trace, if it exists
+        
+        traces = list(fig.data)
+        if len(traces) > 1:
+            traces = traces[:-1]  # Remove the last trace
+        fig.data = traces
+
+        # Remove the previous highlight trace, if it exists
+        # Assuming the last trace is always the highlight
+
+        if selected_precinct is not None:
+            # Add a new trace for the highlighted precinct
+            highlights = get_highlights(selected_precinct)
 
 
-    # If crime types are selected, filter the data further
-    if crime_types:
-        data_filtered = arrests_year_precinct_crime[(arrests_year_precinct_crime['year'] == year) & 
-                                                (arrests_year_precinct_crime['OFNS_DESC'].isin(crime_types))]
+            # Adding the highlight trace
+            highlight_trace = go.Choroplethmapbox(
+                geojson=highlights, 
+                locations=[selected_precinct],
+                featureidkey="properties.precinct",
+                z=[1],  # Dummy variable for choropleth
+                showscale=False,  # Hide the color scale
+                marker_line_color='gold',
+                marker_line_width=3,
+                marker_opacity=0.9
+            )
 
-        # Group by precinct to get total arrests for selected crime types
+            fig.add_trace(highlight_trace)
+
+        return fig
+
+
+    else:
+            # Filter data for the selected years
+        data_filtered = arrests_year_precinct[arrests_year_precinct['year'] == year]
+
+
+        # If crime types are selected, filter the data further
+        if crime_types:
+            data_filtered = arrests_year_precinct_crime[(arrests_year_precinct_crime['year'] == year) & 
+                                                    (arrests_year_precinct_crime['OFNS_DESC'].isin(crime_types))]
+
+            # Group by precinct to get total arrests for selected crime types
+            data_filtered = data_filtered.groupby('ARREST_PRECINCT').sum().reset_index()
+
+
         data_filtered = data_filtered.groupby('ARREST_PRECINCT').sum().reset_index()
 
 
-    data_filtered = data_filtered.groupby('ARREST_PRECINCT').sum().reset_index()
+        # Creating the choropleth map with custom hover data
+        fig = px.choropleth_mapbox(data_filtered, 
+                                geojson=nyc_precincts_geojson, 
+                                locations='ARREST_PRECINCT', 
+                                featureidkey="properties.precinct",
+                                color='arrest_count',
+                                color_continuous_scale="Viridis",
+                                range_color=(data_filtered['arrest_count'].min(), data_filtered['arrest_count'].max()),
+                                mapbox_style="carto-darkmatter",
+                                zoom=10, 
+                                center = {"lat": 40.7128, "lon": -74.0060},
+                                opacity=0.5,
+                                    labels={
+                                            'ARREST_PRECINCT': 'Precinct',
+                                            'arrest_count': 'Arrest Count'
+                                            }
+        )           
 
 
-    # Creating the choropleth map with custom hover data
-    fig = px.choropleth_mapbox(data_filtered, 
-                               geojson=nyc_precincts_geojson, 
-                               locations='ARREST_PRECINCT', 
-                               featureidkey="properties.precinct",
-                               color='arrest_count',
-                               color_continuous_scale="Viridis",
-                               range_color=(data_filtered['arrest_count'].min(), data_filtered['arrest_count'].max()),
-                               mapbox_style="carto-darkmatter",
-                               zoom=10, 
-                               center = {"lat": 40.7128, "lon": -74.0060},
-                               opacity=0.5,
-                                labels={
-                                        'ARREST_PRECINCT': 'Precinct',
-                                        'arrest_count': 'Arrest Count'
-                                        }
-    )           
+        fig = fig.update_layout(
+            legend=dict(
+                title_text="",  # Removes the title
+                orientation='h',
+                yanchor='bottom',
+                y=0.5,  # Adjust this to move the legend up or down on the map
+                xanchor='right',
+                x=0.95,  # Adjust this to move the legend left or right on the map
+                ),
+            font=dict(
+                size=13,
+                color="white"
+                ),
+            legend_traceorder='reversed',
+            margin=dict(l=0, r=0, t=0, b=0),  # Adjust margins to fit the legend inside the map area,
+            title=f'Arrests in {year}',
+            title_x=0.027,
+            title_y=0.95,
+            legend_title="",
+            font_family="Helvetica"
+        )
 
-
-    fig = fig.update_layout(
-        legend=dict(
-            title_text="",  # Removes the title
-            orientation='h',
+        # Customize the color bar
+        fig.update_coloraxes(colorbar=dict(
+            thickness=20,  # Controls the thickness of the color bar
+            len=0.3,  # Controls the length of the color bar (percentage of the figure height)
             yanchor='bottom',
-            y=0.5,  # Adjust this to move the legend up or down on the map
+            y=0.5,  # Adjust this to move the color bar up or down
             xanchor='right',
-            x=0.95,  # Adjust this to move the legend left or right on the map
-            ),
-        font=dict(
-            size=13,
-            color="white"
-            ),
-        legend_traceorder='reversed',
-        margin=dict(l=0, r=0, t=0, b=0),  # Adjust margins to fit the legend inside the map area,
-        title=f'Arrests in {year}',
-        title_x=0.027,
-        title_y=0.95,
-        legend_title="",
-        font_family="Helvetica"
-    )
+            x=0.95  # Adjust this to move the color bar left or right
+        ))
 
-    # Customize the color bar
-    fig.update_coloraxes(colorbar=dict(
-        thickness=20,  # Controls the thickness of the color bar
-        len=0.3,  # Controls the length of the color bar (percentage of the figure height)
-        yanchor='bottom',
-        y=0.5,  # Adjust this to move the color bar up or down
-        xanchor='right',
-        x=0.95  # Adjust this to move the color bar left or right
-    ))
+        if selected_precinct is not None:
 
-    if selected_precinct is not None:
+            highlights = get_highlights(selected_precinct)
 
-        highlights = get_highlights(selected_precinct)
+            fig.add_trace(
+            px.choropleth_mapbox(data_filtered, geojson=highlights, 
+                                color="arrest_count",
+                                locations="ARREST_PRECINCT", 
+                                featureidkey="properties.precinct",                                 
+                                opacity=1).data[0]
+        )
 
-        fig.add_trace(
-        px.choropleth_mapbox(data_filtered, geojson=highlights, 
-                             color="arrest_count",
-                             locations="ARREST_PRECINCT", 
-                             featureidkey="properties.precinct",                                 
-                             opacity=1).data[0]
-    )
-
-    return fig
+        return fig
+    
+    return dash.no_update
 
 
 
@@ -473,20 +521,23 @@ def update_bar(crime_types,selected_precinct,dummy_value):
 
     arrest_data = boro_arrests.groupby(['year','ARREST_BORO']).sum().reset_index()
 
-    if selected_precinct is None and crime_types is None:
-        title = 'Yearly Arrests'
+
+    title = 'Yearly Arrests'
+
+    # if selected_precinct is None and crime_types is None:
+    #     title = 'Yearly Arrests'
     
-    elif selected_precinct is not None and crime_types is not None:
-        title = f'Yearly Arrests in Precinct {selected_precinct} (filtered by crime)'
+    # elif selected_precinct is not None and crime_types is not None:
+    #     title = f'Yearly Arrests in Precinct {selected_precinct} (filtered by crime)'
     
-    elif selected_precinct:
-        title = f'Yearly Arrests in Precinct {selected_precinct}'
+    # elif selected_precinct:
+    #     title = f'Yearly Arrests in Precinct {selected_precinct}'
     
-    elif crime_types:
-        title = 'Yearly Arrests (filtered by crime)'
+    # elif crime_types:
+    #     title = 'Yearly Arrests (filtered by crime)'
     
-    else:
-        title = 'Yearly Arrests'
+    # else:
+    #     title = 'Yearly Arrests'
     
     time.sleep(0.5)
 
@@ -562,23 +613,24 @@ def update_monthly_bar(crime_types, selected_precinct, year):
     arrests_grouped = filtered_data.groupby(['month', 'ARREST_BORO']).sum()['arrest_count'].reset_index()
 
     #Getting title
-    if selected_precinct is None and crime_types is None and year is None:
-        title = 'Monthly Arrests'
+    title = 'Monthly Arrests'
+    # if selected_precinct is None and crime_types is None and year is None:
+    #     title = 'Monthly Arrests'
     
-    elif selected_precinct is not None and crime_types is not None and year is not None:
-        title = f'Monthly Arrests in Precinct {selected_precinct} in {year} (filtered by crime)'
+    # elif selected_precinct is not None and crime_types is not None and year is not None:
+    #     title = f'Monthly Arrests in Precinct {selected_precinct} in {year} (filtered by crime)'
     
-    elif selected_precinct is not None and year is not None:
-        title = f'Monthly Arrests in Precinct {selected_precinct} in {year}'
+    # elif selected_precinct is not None and year is not None:
+    #     title = f'Monthly Arrests in Precinct {selected_precinct} in {year}'
     
-    elif year is not None:
-        title = f'Monthly Arrests in {year}'
+    # elif year is not None:
+    #     title = f'Monthly Arrests in {year}'
     
-    elif crime_types is not None and year is not None:
-        title = f'Monthly Arrests in {year}(filtered by crime)'
+    # elif crime_types is not None and year is not None:
+    #     title = f'Monthly Arrests in {year}(filtered by crime)'
     
-    else:
-        title = 'Monthly Arrests'
+    # else:
+    #     title = 'Monthly Arrests'
         
 
 
@@ -655,21 +707,23 @@ def update_precinct_bar(year, selected_precinct):
     data_filtered = data_filtered.sort_values('arrest_count', ascending=False)
     top_10 = data_filtered.head(10).sort_values('arrest_count', ascending=True)
 
-        #Getting title
-    if selected_precinct is None and year is None:
-        title = 'Arrest Types'
+
+    #Getting title
+    title = 'Arrest Types'
+    # if selected_precinct is None and year is None:
+    #     title = 'Arrest Types'
     
-    elif selected_precinct is not None and year is not None:
-        title = f'Arrest Types in Precinct {selected_precinct} in {year}'
+    # elif selected_precinct is not None and year is not None:
+    #     title = f'Arrest Types in Precinct {selected_precinct} in {year}'
     
-    elif selected_precinct:
-        title = f'Arrest Types in Precinct {selected_precinct}'
+    # elif selected_precinct:
+    #     title = f'Arrest Types in Precinct {selected_precinct}'
     
-    elif year:
-        title = f'Arrest Types in {year}'
+    # elif year:
+    #     title = f'Arrest Types in {year}'
     
-    else:
-        title = 'Arrest Types'
+    # else:
+    #     title = 'Arrest Types'
 
 
 
