@@ -16,7 +16,7 @@ import time
 
 arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_precincts.geojson') as f:
+with open('/Users/carlfinkbeiner/nyc_crime_dash/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
 
@@ -504,17 +504,17 @@ def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_
             x=0.95  # Adjust this to move the color bar left or right
         ))
 
-        if selected_precinct is not None:
+        # if selected_precinct is not None:
 
-            highlights = get_highlights(selected_precinct)
+        #     highlights = get_highlights(selected_precinct)
 
-            fig.add_trace(
-            px.choropleth_mapbox(data_filtered, geojson=highlights, 
-                                color="arrest_count",
-                                locations="ARREST_PRECINCT", 
-                                featureidkey="properties.precinct",                                 
-                                opacity=1).data[0]
-        )
+        #     fig.add_trace(
+        #     px.choropleth_mapbox(data_filtered, geojson=highlights, 
+        #                         color="arrest_count",
+        #                         locations="ARREST_PRECINCT", 
+        #                         featureidkey="properties.precinct",                                 
+        #                         opacity=1).data[0]
+        # )
 
         return fig
     
@@ -545,7 +545,7 @@ def update_bar(crime_types,selected_precinct,dummy_value):
 
     title = 'Yearly Arrests'
     
-    time.sleep(0.25)
+    time.sleep(2)
 
     arrest_bar = px.bar(arrest_data, 
             x='year', 
@@ -628,7 +628,7 @@ def update_monthly_bar(crime_types, selected_precinct, year):
 
     arrests_grouped = arrests_grouped.sort_values('month')
     
-    time.sleep(0.25)
+    time.sleep(2)
 
     monthly_bar = px.line(
         arrests_grouped,
@@ -699,7 +699,8 @@ def update_precinct_bar(year, selected_precinct):
     #Getting title
     title = 'Arrest Types'
 
-    time.sleep(0.25)
+    time.sleep(2)
+    
     bar = px.bar(
         top_10, 
         x='arrest_count', 
