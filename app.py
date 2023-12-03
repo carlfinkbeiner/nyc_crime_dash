@@ -16,7 +16,7 @@ import time
 
 arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/nyc_crime_dash/data/police_precincts.geojson') as f:
+with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
 
@@ -93,7 +93,7 @@ app.layout = html.Div([
             ),
 
             #Crime selection dropdown
-            html.Label("Select Crime:", className='dropdown-label',style={'color': '#FFFFFF'}),
+            html.Label("Crime Type:", className='dropdown-label',style={'color': '#FFFFFF'}),
             dcc.Dropdown(
                 id='crime-type-dropdown',
                 options=[{'label': crime, 'value': crime} for crime in arrests_year_precinct_crime['OFNS_DESC'].unique()],
@@ -104,14 +104,14 @@ app.layout = html.Div([
             
             # Year and crime type dropdowns for 'Percent Change' map
             html.Div(id='percent-change-controls', children=[
-                html.Label("Select Year 1:", className='dropdown-label',style={'color': '#FFFFFF'}),
+                html.Label("Year 1:", className='dropdown-label',style={'color': '#FFFFFF'}),
                 dcc.Dropdown(
                     id='year1-dropdown',
                     options=[{'label': year, 'value': year} for year in arrests_year_precinct['year'].unique()],
                     value=((arrests_year_precinct['year'].max())-1),
                     className='dropdown'
                 ),
-                html.Label("Select Year 2:", className='dropdown-label',style={'color': '#FFFFFF'}),
+                html.Label("Year 2:", className='dropdown-label',style={'color': '#FFFFFF'}),
                 dcc.Dropdown(
                     id='year2-dropdown',
                     options=[{'label': year, 'value': year} for year in arrests_year_precinct['year'].unique()],
@@ -123,7 +123,7 @@ app.layout = html.Div([
             
             # Year dropdown for 'Total Arrests' map
             html.Div(id='total-arrests-controls', children=[
-                html.Label("Select Year:", className='dropdown-label',style={'color': '#FFFFFF'}),
+                html.Label("Year:", className='dropdown-label',style={'color': '#FFFFFF'}),
                 dcc.Dropdown(
                     id='arrest-year-dropdown',
                     options=[{'label': year, 'value': year} for year in arrests_year_precinct['year'].unique()],
@@ -358,6 +358,42 @@ def get_highlights(selected_precinct, precinct_lookup=nyc_precincts_lookup):
     return geojson_highlights
 
 
+def trace_creation(selected_precinct, figure):
+
+    highlights = get_highlights(selected_precinct)
+    # Iterate over all geographic features of the selected precinct
+    for feature in highlights['features']:
+        if feature['geometry']['type'] == 'MultiPolygon':
+            # Iterate through each polygon in the MultiPolygon
+            for poly in feature['geometry']['coordinates']:
+                for coords in poly:
+                    lons, lats = zip(*coords)
+                    border_trace = go.Scattermapbox(
+                        lon=lons,
+                        lat=lats,
+                        mode='lines',
+                        line=dict(color='gold', width=3),
+                        hoverinfo='skip',
+                        showlegend=False,
+                        name='highlight'
+                    )
+                    figure.add_trace(border_trace)
+        elif feature['geometry']['type'] == 'Polygon':
+            # Directly use the coordinates in the Polygon
+            for coords in feature['geometry']['coordinates']:
+                lons, lats = zip(*coords)
+                border_trace = go.Scattermapbox(
+                    lon=lons,
+                    lat=lats,
+                    mode='lines',
+                    line=dict(color='gold', width=3),
+                    hoverinfo='skip',
+                    showlegend=False,
+                    name='highlight'
+                )
+                figure.add_trace(border_trace)
+    return figure
+
 
 #Arrest count map
 @app.callback(
@@ -398,38 +434,8 @@ def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_
 
         if selected_precinct is not None:
             # Add a new trace for the highlighted precinct
-            highlights = get_highlights(selected_precinct)
-            # Iterate over all geographic features of the selected precinct
-            for feature in highlights['features']:
-                if feature['geometry']['type'] == 'MultiPolygon':
-                    # Iterate through each polygon in the MultiPolygon
-                    for poly in feature['geometry']['coordinates']:
-                        for coords in poly:
-                            lons, lats = zip(*coords)
-                            border_trace = go.Scattermapbox(
-                                lon=lons,
-                                lat=lats,
-                                mode='lines',
-                                line=dict(color='gold', width=3),
-                                hoverinfo='skip',
-                                showlegend=False,
-                                name='highlight'
-                            )
-                            fig.add_trace(border_trace)
-                elif feature['geometry']['type'] == 'Polygon':
-                    # Directly use the coordinates in the Polygon
-                    for coords in feature['geometry']['coordinates']:
-                        lons, lats = zip(*coords)
-                        border_trace = go.Scattermapbox(
-                            lon=lons,
-                            lat=lats,
-                            mode='lines',
-                            line=dict(color='gold', width=3),
-                            hoverinfo='skip',
-                            showlegend=False,
-                            name='highlight'
-                        )
-                        fig.add_trace(border_trace)
+            
+            trace_creation(selected_precinct,fig)
 
         return fig
         
@@ -504,17 +510,9 @@ def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_
             x=0.95  # Adjust this to move the color bar left or right
         ))
 
-        # if selected_precinct is not None:
-
-        #     highlights = get_highlights(selected_precinct)
-
-        #     fig.add_trace(
-        #     px.choropleth_mapbox(data_filtered, geojson=highlights, 
-        #                         color="arrest_count",
-        #                         locations="ARREST_PRECINCT", 
-        #                         featureidkey="properties.precinct",                                 
-        #                         opacity=1).data[0]
-        # )
+        if selected_precinct is not None:
+            # Add a new trace for the highlighted precinct
+            trace_creation(selected_precinct,fig)
 
         return fig
     
