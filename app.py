@@ -1,6 +1,4 @@
-
-
-
+import os
 import dash
 import requests
 from dash import html, dcc, Input, Output, State
@@ -740,4 +738,5 @@ def update_precinct_bar(year, selected_precinct):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    port = int(os.environ.get('PORT', 8050))  # Use Heroku's PORT environment variable or 8050 if it's not set
+    app.run_server(debug=False, host='0.0.0.0', port=port)
