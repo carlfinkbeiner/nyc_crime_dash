@@ -1,9 +1,6 @@
 dash==2.14.1
-dash-core-components==2.0.0
-dash-html-components==2.0.0
-dash-table==5.0.0
-pep8==1.7.1
-ply==3.11
-scipy==1.9.1
+requests==2.31.0
+plotly==5.18.0
+pandas==2.1.2
 
 
