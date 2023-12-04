@@ -1,9 +1,7 @@
-
 dash==2.14.1
 dash-core-components==2.0.0
 dash-html-components==2.0.0
 dash-table==5.0.0
-datashape==0.5.4
 pep8==1.7.1
 ply==3.11
 scipy==1.9.1
