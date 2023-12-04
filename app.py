@@ -99,7 +99,8 @@ app.layout = html.Div([
                 options=[{'label': crime, 'value': crime} for crime in arrests_year_precinct_crime['OFNS_DESC'].unique()],
                 value=None,
                 multi=True,                
-                className='dropdown'
+                className='dropdown',
+                optionHeight=70
             ),
             
             # Year and crime type dropdowns for 'Percent Change' map
