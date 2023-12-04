@@ -75,8 +75,7 @@ app.layout = html.Div([
                 dcc.Markdown("""
                     Arrest data is sourced from the NYS Open Data Program and covers all years from 2006 to 2022. 
                              
-                    This dataset is updated annually and was initially released to the public in 2018 to offer greater insight into police enforcement activity.
-                    
+                    This dataset is updated annually and was initially released to the public in 2018.
                     """),
                 className='static-text-box'
             ),

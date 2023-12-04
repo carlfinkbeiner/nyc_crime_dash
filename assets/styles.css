@@ -45,7 +45,7 @@
 
 /* Side panel styling */
 .side-panel {
-  width: 20%; /* Adjust width as needed */
+  width: 15%; /* Adjust width as needed */
   background-color: #222;
   color: #fff; /* Text color set to white for visibility */
   padding: 20px;
@@ -104,6 +104,8 @@ body {
   margin-bottom: 20px;
 }
 
+
+
 .reset-button-container {
   margin-top: 20px;
 }
@@ -146,6 +148,7 @@ body {
 .dropdown {
   padding-bottom: 20px;
   padding-top: 10px;
+
 }
 
 /* CSS for the dropdown selected option */
