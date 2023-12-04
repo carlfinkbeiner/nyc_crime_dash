@@ -16,7 +16,7 @@ import time
 
 arrest_data = pd.read_csv('data/arrest_data_processed.csv')
 
-with open('/Users/carlfinkbeiner/Riverside_Analytics/nyc_crime_dash/data/police_precincts.geojson') as f:
+with open('data/police_precincts.geojson') as f:
      nyc_precincts_geojson = json.load(f)
 
 
