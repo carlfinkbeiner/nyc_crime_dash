@@ -41,7 +41,7 @@ arrests_month_boro_crime_precinct = arrest_data.groupby(['month','ARREST_BORO','
 arrests_year_boro_crime_precinct = arrest_data.groupby(['year','ARREST_BORO','OFNS_DESC','ARREST_PRECINCT']).sum()['arrest_count'].reset_index()
 
 
-# Initialize the Dash application
+
 app = dash.Dash(__name__)
 
 app.layout = html.Div([
@@ -259,7 +259,7 @@ def update_percent_change_map(year1, year2, crime_types, selected_map):
 
     #Do not update if total arrest map selected
     if selected_map != 'percent_change':
-        return dash.no_update  # Don't update this graph unless it's selected
+        return dash.no_update
 
     # Filter data for the selected years
     data_year1 = arrests_year_precinct[arrests_year_precinct['year'] == year1]
@@ -305,17 +305,14 @@ def update_percent_change_map(year1, year2, crime_types, selected_map):
                                 'arrest_count_year2': f":.0f Arrests in {year2}"}
                               )
 
-
-    #fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
     fig.update_layout(
         legend=dict(
             title=None,  # Removes the title
             orientation='h',
             yanchor='bottom',
-            y=0.5,  # Adjust this to move the legend up or down on the map
+            y=0.5,
             xanchor='right',
-            x=0.95,  # Adjust this to move the legend left or right on the map
+            x=0.95,
             ),
         font=dict(
             size=13,
@@ -475,9 +472,9 @@ def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_
                 title_text="",  # Removes the title
                 orientation='h',
                 yanchor='bottom',
-                y=0.5,  # Adjust this to move the legend up or down on the map
+                y=0.5,  
                 xanchor='right',
-                x=0.95,  # Adjust this to move the legend left or right on the map
+                x=0.95,  
                 ),
             font=dict(
                 size=13,
@@ -576,13 +573,7 @@ def update_bar(crime_types,selected_precinct,dummy_value):
             font_family="Helvetica"  # Adjust the padding to give the title some space if needed           
     )
 
-    #arrest_bar.update_xaxes(linecolor='red')
-
     arrest_bar.update_yaxes(gridcolor='#838282')
-    #arrest_bar.update_xaxes(linecolor='#838282')
-
-    #arrest_bar.update_xaxes(gridcolor='red')
-
 
     return arrest_bar
 
@@ -656,12 +647,12 @@ def update_monthly_bar(crime_types, selected_precinct, year):
         ),
         title={
             'text': title,
-            'y':0.95,  # Adjusts the title's vertical position. You may not need this if `t=60` works well.
+            'y':0.95,
             'x':0.1,  # Centers the title
             'xanchor': 'left',
             'yanchor': 'top'
         },
-        title_pad=dict(t=1),  # Adjust the padding to give the title some space if needed 
+        title_pad=dict(t=1), 
         margin=dict(t=60),
         font_family="Helvetica"
     )
@@ -689,8 +680,6 @@ def update_precinct_bar(year, selected_precinct):
     else:
         filtered_data = arrests_year_precinct_crime[(arrests_year_precinct_crime['year'] == year) & (arrests_year_precinct_crime['ARREST_PRECINCT'] == selected_precinct)]
     
-
-    #data_filtered = filtered_data.sort_values('arrest_count', ascending=False)
     data_filtered = filtered_data.groupby(['OFNS_DESC']).sum()['arrest_count'].reset_index()
     data_filtered = data_filtered.sort_values('arrest_count', ascending=False)
     top_10 = data_filtered.head(10).sort_values('arrest_count', ascending=True)
@@ -721,12 +710,12 @@ def update_precinct_bar(year, selected_precinct):
                     template='plotly',
                     title={
                         'text': title,
-                        'y':0.95,  # Adjusts the title's vertical position. You may not need this if `t=60` works well.
-                        'x':0.1,  # Centers the title
+                        'y':0.95, 
+                        'x':0.1,
                         'xanchor': 'left',
                         'yanchor': 'top'
                     },
-                    title_pad=dict(t=1),  # Adjust the padding to give the title some space if needed 
+                    title_pad=dict(t=1),
                     font_family="Helvetica"
                 )
 
@@ -738,5 +727,5 @@ def update_precinct_bar(year, selected_precinct):
 
 # Run the app
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8050))  # Use Heroku's PORT environment variable or 8050 if it's not set
+    port = int(os.environ.get('PORT', 8050))  # Configures app to use Heroku's Port
     app.run_server(debug=False, host='0.0.0.0', port=port)
