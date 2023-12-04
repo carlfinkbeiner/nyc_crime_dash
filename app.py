@@ -28,7 +28,7 @@ borough_colors = {
     "Staten Island": "#8D82B6"
 }
 
-custom_background_color = '#333333'
+custom_background_color = '#222'
 #https://dash-example-index.herokuapp.com/cheatsheet
 
 # Aggregating total arrests per year and precinct
@@ -76,6 +76,7 @@ app.layout = html.Div([
                     Arrest data is sourced from the NYS Open Data Program and covers all years from 2006 to 2022. 
                              
                     This dataset is updated annually and was initially released to the public in 2018 to offer greater insight into police enforcement activity.
+                    
                     """),
                 className='static-text-box'
             ),
@@ -392,6 +393,7 @@ def trace_creation(selected_precinct, figure):
                     name='highlight'
                 )
                 figure.add_trace(border_trace)
+
     return figure
 
 
@@ -431,7 +433,6 @@ def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_
         # Create a new figure with the filtered traces and the same layout
         fig = go.Figure(data=fig_data, layout=fig_layout)
 
-
         if selected_precinct is not None:
             # Add a new trace for the highlighted precinct
             
@@ -440,24 +441,18 @@ def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_
         return fig
         
 
-
-
     else:
         # Filter data for the selected years
         data_filtered = arrests_year_precinct[arrests_year_precinct['year'] == year]
-
 
         # If crime types are selected, filter the data further
         if crime_types:
             data_filtered = arrests_year_precinct_crime[(arrests_year_precinct_crime['year'] == year) & 
                                                     (arrests_year_precinct_crime['OFNS_DESC'].isin(crime_types))]
-
             # Group by precinct to get total arrests for selected crime types
             data_filtered = data_filtered.groupby('ARREST_PRECINCT').sum().reset_index()
 
-
         data_filtered = data_filtered.groupby('ARREST_PRECINCT').sum().reset_index()
-
 
         # Creating the choropleth map with custom hover data
         fig = px.choropleth_mapbox(data_filtered, 
@@ -476,7 +471,6 @@ def update_arrest_map(year, crime_types,selected_map,selected_precinct, current_
                                             'arrest_count': 'Arrest Count'
                                             }
         )           
-
 
         fig = fig.update_layout(
             legend=dict(
@@ -537,7 +531,6 @@ def update_bar(crime_types,selected_precinct,dummy_value):
     if selected_precinct:
         boro_arrests = boro_arrests[(boro_arrests['ARREST_PRECINCT'] == selected_precinct)]
 
-
     arrest_data = boro_arrests.groupby(['year','ARREST_BORO']).sum().reset_index()
 
 
@@ -584,6 +577,14 @@ def update_bar(crime_types,selected_precinct,dummy_value):
             title_pad=dict(t=1),
             font_family="Helvetica"  # Adjust the padding to give the title some space if needed           
     )
+
+    #arrest_bar.update_xaxes(linecolor='red')
+
+    arrest_bar.update_yaxes(gridcolor='#838282')
+    #arrest_bar.update_xaxes(linecolor='#838282')
+
+    #arrest_bar.update_xaxes(gridcolor='red')
+
 
     return arrest_bar
 
@@ -669,6 +670,9 @@ def update_monthly_bar(crime_types, selected_precinct, year):
     
     monthly_bar.update_traces(line=dict(width=3))
 
+    monthly_bar.update_yaxes(gridcolor='#838282')
+    monthly_bar.update_xaxes(gridcolor='#222')
+
     return monthly_bar
 
 
@@ -727,6 +731,9 @@ def update_precinct_bar(year, selected_precinct):
                     title_pad=dict(t=1),  # Adjust the padding to give the title some space if needed 
                     font_family="Helvetica"
                 )
+
+
+    fig.update_xaxes(gridcolor='#222')
 
     return fig
 

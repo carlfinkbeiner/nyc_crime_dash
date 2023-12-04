@@ -49,14 +49,14 @@
   background-color: #222;
   color: #fff; /* Text color set to white for visibility */
   padding: 20px;
-  border-right: 2px solid #444;
+  /* border-right: 2px solid #444;
   overflow: auto; /* Enable scrolling if content overflows */
 }
 
 /* Main panel styling */
 .main-panel {
   flex-grow: 1; /* Allow the main panel to fill the remaining width */
-  background-color: #333;
+  background-color: #222;
   color: #fff; /* Text color set to white for visibility */
   padding: 20px;
   overflow: auto; /* Enable scrolling if content overflows */
@@ -68,13 +68,13 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  height: 100%; /* This helps to fill the full height of the browser window */
-  width: 100%; /* This helps to fill the full width of the browser window */
+  height: 100%; 
+  width: 100%; 
 }
 
 .header-title {
   font-size: 34px;
-  font-family: Helvetica;
+  font-family: Verdana;
   color: #D6D7D7;
   margin: 0; /* Remove default margins */
 }
@@ -93,7 +93,6 @@ body {
 .static-text-box {
   background-color: #222; /* Matching the side-panel background color */
   color: #fff; /* White text color for readability */
-  border: 1px solid #444; /* Border to match the overall style */
   padding: 7px; /* Inner spacing for text */
   margin-bottom: 20px; /* Space below the text box */
   overflow-y: auto; /* Allows for a scrollbar if the text overflows */
@@ -139,7 +138,7 @@ body {
 /* Style for the dropdown label */
 .dropdown-label {
   font-family: Helvetica, sans-serif; /* Use Helvetica as the primary font, with a generic sans-serif as a fallback */
-  color: #ffffff; /* White color text */
+  color: #ffffff; 
   padding-bottom: 10px;
   font-weight: bold;
 }
@@ -177,7 +176,7 @@ body {
 
 /* CSS for the control of the dropdown */
 .Select-control {
-  background-color: #333 !important; /* Match the background color to your app's theme */
+  background-color: #333 !important;
   border-color: #555 !important; /* Matching border color */
   font-family: Helvetica;
 }
@@ -214,7 +213,7 @@ button:hover {
   color: #fff; /* White text color for better readability on a dark background */
   font-size: 16px; /* Increase font size for better visibility */
   padding-top: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
   font-family: Helvetica;
 }
 
@@ -229,7 +228,7 @@ button:hover {
 .radio-items label {
   cursor: pointer; /* Indicate that labels are clickable */
   padding: 5px 10px; /* Add some padding for clickable area */
-  border-radius: 5px; /* Optional: Add rounded corners to the labels */
+  border-radius: 5px; 
   transition: background-color 0.3s; /* Smooth transition for background color change */
   font-family: Helvetica;
 }
