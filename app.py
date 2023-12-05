@@ -171,6 +171,27 @@ app.layout = html.Div([
     html.Div(id='dummy-div', children='constant', style={'display': 'none'})
 ], className='dashboard-container')
 
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Riverside Analytics</title>
+        <link rel="icon" type="image/png" href="assets/favicon.png">
+        {%metas%}
+        {%favicon%}
+        {%css%}
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>
+'''
+
 
 
 # Toggle options callback
