@@ -175,7 +175,7 @@ app.index_string = '''
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Riverside Analytics</title>
+        <title>RA - Crime Dash</title>
         <link rel="icon" type="image/png" href="assets/favicon.png">
         {%metas%}
         {%favicon%}
