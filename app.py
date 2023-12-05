@@ -355,12 +355,11 @@ def get_highlights(selected_precinct, precinct_lookup=nyc_precincts_lookup):
 
 
 def trace_creation(selected_precinct, figure):
-
     highlights = get_highlights(selected_precinct)
-    # Iterate over all geographic features of the selected precinct
+    traces_to_add = []  # List to store all new traces
+
     for feature in highlights['features']:
         if feature['geometry']['type'] == 'MultiPolygon':
-            # Iterate through each polygon in the MultiPolygon
             for poly in feature['geometry']['coordinates']:
                 for coords in poly:
                     lons, lats = zip(*coords)
@@ -373,9 +372,9 @@ def trace_creation(selected_precinct, figure):
                         showlegend=False,
                         name='highlight'
                     )
-                    figure.add_trace(border_trace)
+                    traces_to_add.append(border_trace)
+
         elif feature['geometry']['type'] == 'Polygon':
-            # Directly use the coordinates in the Polygon
             for coords in feature['geometry']['coordinates']:
                 lons, lats = zip(*coords)
                 border_trace = go.Scattermapbox(
@@ -387,9 +386,12 @@ def trace_creation(selected_precinct, figure):
                     showlegend=False,
                     name='highlight'
                 )
-                figure.add_trace(border_trace)
+                traces_to_add.append(border_trace)
 
+    # Add all new traces in a single operation
+    figure.add_traces(traces_to_add)
     return figure
+
 
 
 #Arrest count map
@@ -531,7 +533,7 @@ def update_bar(crime_types,selected_precinct,dummy_value):
 
     title = 'Yearly Arrests'
     
-    time.sleep(3)
+    time.sleep(2)
 
     arrest_bar = px.bar(arrest_data, 
             x='year', 
@@ -616,7 +618,7 @@ def update_monthly_bar(crime_types, selected_precinct, year):
 
     arrests_grouped = arrests_grouped.sort_values('month')
     
-    time.sleep(3)
+    time.sleep(2)
 
     monthly_bar = px.line(
         arrests_grouped,
@@ -688,7 +690,7 @@ def update_precinct_bar(year, selected_precinct):
     #Getting title
     title = 'Arrest Types'
 
-    time.sleep(3)
+    time.sleep(2)
     
     bar = px.bar(
         top_10, 
