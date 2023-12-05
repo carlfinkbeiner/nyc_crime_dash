@@ -531,7 +531,7 @@ def update_bar(crime_types,selected_precinct,dummy_value):
 
     title = 'Yearly Arrests'
     
-    time.sleep(4)
+    time.sleep(3)
 
     arrest_bar = px.bar(arrest_data, 
             x='year', 
@@ -616,7 +616,7 @@ def update_monthly_bar(crime_types, selected_precinct, year):
 
     arrests_grouped = arrests_grouped.sort_values('month')
     
-    time.sleep(4)
+    time.sleep(3)
 
     monthly_bar = px.line(
         arrests_grouped,
@@ -688,7 +688,7 @@ def update_precinct_bar(year, selected_precinct):
     #Getting title
     title = 'Arrest Types'
 
-    time.sleep(4)
+    time.sleep(3)
     
     bar = px.bar(
         top_10, 
