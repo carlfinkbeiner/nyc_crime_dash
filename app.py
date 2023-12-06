@@ -47,7 +47,7 @@ app = dash.Dash(__name__)
 app.layout = html.Div([
     html.Div([
         html.Div([
-            html.H1("Crime in New York City", className='header-title')
+            html.H1("NYPD Crime Enforcement", className='header-title')
             ], className='header-left'
         ),
         html.Div([
@@ -136,16 +136,10 @@ app.layout = html.Div([
         ], className='side-panel'),
          # Main panel for maps and charts
         html.Div([
-            # Maps will be displayed here based on the toggle selection
-            # dcc.Loading(
-            #     id="loading_maps",
-            #     type="default",
-            #     children=
             html.Div([
                 html.Div(dcc.Graph(id='crime-change-map', className='map-graph'), id='percent-change-map-container', style={'display': 'none'}),  # initially hidden
                 html.Div(dcc.Graph(id='arrest-map', className='map-graph'), id='total-arrests-map-container')  # initially visible
                 ], id='map-container'),
-            #),
             
             # Bar charts container
             html.Div([
@@ -175,7 +169,7 @@ app.index_string = '''
 <!DOCTYPE html>
 <html>
     <head>
-        <title>RA - Crime Dash</title>
+        <title>NYPD Crime Enforcement</title>
         <link rel="icon" type="image/png" href="assets/favicon.png">
         {%metas%}
         {%favicon%}
