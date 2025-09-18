@@ -26,6 +26,14 @@ borough_colors = {
     "Staten Island": "#8D82B6"
 }
 
+legend_items = [
+    html.Div([
+        html.Span(style={'backgroundColor': color}, className='legend-color-box'),
+        html.Span(borough, className='legend-label')
+    ], className='legend-item')
+    for borough, color in borough_colors.items()
+]
+
 custom_background_color = '#222'
 #https://dash-example-index.herokuapp.com/cheatsheet
 
@@ -72,12 +80,16 @@ app.layout = html.Div([
         html.Div([
             html.Div(
                 dcc.Markdown("""
-                    Arrest data is sourced from the NYS Open Data Program and covers all years from 2006 to 2022. 
-                             
+                    Arrest data is sourced from the NYS Open Data Program and covers all years from 2006 to 2022.
+
                     This dataset is updated annually and was initially released to the public in 2018.
                     """),
                 className='static-text-box'
             ),
+            html.Div([
+                html.H3("Borough Colors", className='legend-title'),
+                *legend_items
+            ], className='legend-container'),
             html.Label("Map Type:", className='dropdown-label',style={'color': '#FFFFFF'}),
             # Toggles for the map type
             dcc.RadioItems(
