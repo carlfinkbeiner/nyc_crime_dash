@@ -43,6 +43,7 @@ arrests_year_boro_crime_precinct = arrest_data.groupby(['year','ARREST_BORO','OF
 
 
 app = dash.Dash(__name__)
+server = app.server
 
 app.layout = html.Div([
     html.Div([
